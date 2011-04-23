@@ -113,48 +113,17 @@ function MjtWebGlToolkit()
 	this.setUniforms = function setUniforms(perspectiveMatrix, modelViewMatrix, positionArray)
 	{
 		
-		//var perspectiveMatrix = new J3DIMatrix4();
-
-		// fovy (field of view? y), aspect, zNear, zFar
-		//perspectiveMatrix.perspective(45, this.width / this.height, 0.1, 100);
-
-		// Construct the model-view * projection matrix and pass it in
-		// this determines location
-		
-//		var mvpMatrix = new J3DIMatrix4();
-//
-//		
-//		mvpMatrix.load(perspectiveMatrix);
-//		mvpMatrix.multiply(mvMatrix);
-
-//		var modelViewMatrix = this.modelViewMatrix;
-//		modelViewMatrix.makeIdentity();
-//		modelViewMatrix.rotate(-pitch, 1,0,0);
-//		modelViewMatrix.rotate(-yaw, 0,1,0);
-//		modelViewMatrix.translate(-posx, -posy, -posz);
 		modelViewMatrix.translate(positionArray);
 		modelViewMatrix.setUniform(this.gl, this.u_modelViewMatrixLoc, false);
-		
-//		var projMatrix = new J3DIMatrix4();
-//		projMatrix.load(perspectiveMatrix);
-//		perspectiveMatrix.setUniform(this.gl, this.u_projMatrixLoc, false);
-
 		
 		
 		// Construct the normal matrix from the model-view matrix and pass it in
 		// normal is only used for determining color
-
-		
 		var normalMatrix = this.normalMatrix;
 		normalMatrix.load(modelViewMatrix);
 		normalMatrix.invert();
 		normalMatrix.transpose();
 		normalMatrix.setUniform(this.gl, this.u_normalMatrixLoc, false);
-
-
-		
-//		mvpMatrix.setUniform(this.gl, u_modelViewProjMatrixLoc, false);
-//		mvpMatrix.setUniform(this.gl, u_modelViewProjMatrixLoc, false);
 	};
 	
 	this._perspectiveMatrix = null;
@@ -339,89 +308,50 @@ function MjtKeyboardHandler()
 {
 	this.moveForward = function moveForward()
 	{
-//        posx -= Math.sin(degToRad(yaw)) * cameraStepAmount;
-//        posz -= Math.cos(degToRad(yaw)) * cameraStepAmount;
+        posx -= Math.sin(degToRad(yaw)) * cameraStepAmount;
+        posz -= Math.cos(degToRad(yaw)) * cameraStepAmount;
 
         
-        //posz=posz-cameraStepAmount;
-//		mjtWebGlToolkit.camera.eye[2]=mjtWebGlToolkit.camera.eye[2] - mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.camera.center[2]=mjtWebGlToolkit.camera.center[2] - mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.updatePerspective();
-//		mjtWebGlToolkit._perspectiveMatrix.lookat(mjtWebGlToolkit.camera.eye.getAsArray(), mjtWebGlToolkit.camera.center.getAsArray(), mjtWebGlToolkit.camera.up.getAsArray());
-//		mjtWebGlToolkit._perspectiveMatrix.translate(0, 0, mjtKeyboardHandler.cameraStepAmount);
 		mjtWebGlToolkit.drawPicture();
 	};
 	this.moveBackward = function moveBackward()
 	{
         posx += Math.sin(degToRad(yaw)) * cameraStepAmount;
         posz += Math.cos(degToRad(yaw)) * cameraStepAmount;
-		//posz=posz+cameraStepAmount;
-//		mjtWebGlToolkit.camera.eye[2]=mjtWebGlToolkit.camera.eye[2] + mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.camera.center[2]=mjtWebGlToolkit.camera.center[2] + mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.updatePerspective();
-	//	mjtWebGlToolkit._perspectiveMatrix.translate(0, 0, -mjtKeyboardHandler.cameraStepAmount);
 		mjtWebGlToolkit.drawPicture();
 	};
 	this.moveLeft = function moveLeft()
 	{
 		yaw+=cameraStepAmount;
-		//posx=posx-cameraStepAmount;
-//		mjtWebGlToolkit.camera.eye[0]=mjtWebGlToolkit.camera.eye[0] - mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.camera.center[0]=mjtWebGlToolkit.camera.center[0] - mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.updatePerspective();
-//		mjtWebGlToolkit._perspectiveMatrix.translate(mjtKeyboardHandler.cameraStepAmount, 0, 0);
 		mjtWebGlToolkit.drawPicture();
 	};
 	this.moveRight = function moveRight()
 	{
 		yaw-=cameraStepAmount;
-		//posx=posx+cameraStepAmount;
-//		mjtWebGlToolkit.camera.eye[0]=mjtWebGlToolkit.camera.eye[0] + mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.camera.center[0]=mjtWebGlToolkit.camera.center[0] + mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.updatePerspective();
-//		mjtWebGlToolkit._perspectiveMatrix.translate(-mjtKeyboardHandler.cameraStepAmount, 0, 0);
 		mjtWebGlToolkit.drawPicture();
 	};
 	
 	this.moveUp = function moveUp()
 	{
 		pitch++;
-//		mjtWebGlToolkit.camera.eye[1]=mjtWebGlToolkit.camera.eye[1] + mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.camera.center[1]=mjtWebGlToolkit.camera.center[1] + mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.updatePerspective();
-//		mjtWebGlToolkit._perspectiveMatrix.translate(0, -mjtKeyboardHandler.cameraStepAmount, 0);
 		mjtWebGlToolkit.drawPicture();
 	};
 
 	this.moveDown = function moveDown()
 	{
 		pitch--;
-//		mjtWebGlToolkit.camera.eye[1]=mjtWebGlToolkit.camera.eye[1] - mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.camera.center[1]=mjtWebGlToolkit.camera.center[1] - mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.updatePerspective();
-//		mjtWebGlToolkit._perspectiveMatrix.translate(0, mjtKeyboardHandler.cameraStepAmount, 0);
 		mjtWebGlToolkit.drawPicture();
 	};
 	
 	this.lookLeft = function lookLeft()
 	{
-		
 		yaw+=cameraStepAmount;
-//		mjtWebGlToolkit.camera.centerx = mjtWebGlToolkit.camera.centerx + mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.updatePerspective();
-		
-//		var tmpMatrix = new J3DIMatrix4();
-//		mjtWebGlToolkit._perspectiveMatrix.rotate(1, 1,0,0);
-		//mjtWebGlToolkit._perspectiveMatrix.multiply(tmpMatrix);
 		mjtWebGlToolkit.drawPicture();
 	};
 	
 	this.lookRight = function lookRight()
 	{
 		yaw-=cameraStepAmount;
-//		mjtWebGlToolkit.camera.centerx = mjtWebGlToolkit.camera.centerx - mjtKeyboardHandler.cameraStepAmount;
-//		mjtWebGlToolkit.updatePerspective();
-		//mjtWebGlToolkit._perspectiveMatrix.rotate(1, -1, 0, 0);
 		mjtWebGlToolkit.drawPicture();
 	};
 	
