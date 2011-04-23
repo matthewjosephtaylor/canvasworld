@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Spinning WebGL Box</title>
+
+<script type="text/javascript" src="js/webgl-utils.js"></script>
+<script src="js/J3DI.js">
+	
+</script>
+<script src="js/J3DIMath.js" type="text/javascript">
+	
+</script>
+<script id="vshader" type="x-shader/x-vertex">
+    uniform mat4 u_modelViewProjMatrix;
+    uniform mat4 u_normalMatrix;
+    uniform vec3 lightDir;
+
+    attribute vec3 vNormal;
+    attribute vec4 vColor;
+    attribute vec4 vPosition;
+
+    varying float v_Dot;
+    varying vec4 v_Color;
+
+    void main()
+    {
+        gl_Position = u_modelViewProjMatrix * vPosition;
+        v_Color = vColor;
+        vec4 transNormal = u_normalMatrix * vec4(vNormal, 1);
+        v_Dot = max(dot(transNormal.xyz, lightDir), 0.0);
+    }
+</script>
+
+<script id="fshader" type="x-shader/x-fragment">
+#ifdef GL_ES
+    precision mediump float;
+#endif
+
+    varying float v_Dot;
+    varying vec4 v_Color;
+
+    void main()
+    {
+        //gl_FragColor = vec4(v_Color.xyz * v_Dot, v_Color.a);
+		//gl_FragColor = vec4(1, 0, 0, 1);  // Red
+		gl_FragColor = vec4(v_Color.xyz, 0, 0, v_Color.a);
+    }
+</script>
+
+<script src ="js/main.js">
+
+</script>
+<style type="text/css">
+canvas { /* border: 2px solid black; */
+	
+}
+
+.text {
+	position: absolute;
+	top: 100px;
+	left: 20px;
+	font-size: 2em;
+	color: blue;
+}
+</style>
+</head>
+
+<body onload="mjtWebGlToolkit.start('mainCanvas')">
+	<canvas id="mainCanvas">
+    If you're seeing this your web browser doesn't support the &lt;canvas>&gt; element. Ouch!
+</canvas>
+	<div class="text">This is some text over the canvas</div>
+	<div id="framerate"></div>
+</body>
+
+</html>
