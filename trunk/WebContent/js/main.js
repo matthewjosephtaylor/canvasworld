@@ -65,7 +65,7 @@ function MjtWebGlToolkit()
 		this.u_modelViewMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_modelViewMatrix");
 		this.u_projMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_projMatrix");
 		this.u_normalMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_normalMatrix");
-		this.u_cameraTranslationMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_cameraTranslationMatrix");
+		//this.u_cameraTranslationMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_cameraTranslationMatrix");
 
 		
 		
@@ -175,11 +175,11 @@ function MjtWebGlToolkit()
 		this.cameraTranslationMatrix.rotate(-pitch, 1, 0, 0);
 		this.cameraTranslationMatrix.rotate(-yaw, 0, 1, 0);
 		this.cameraTranslationMatrix.translate(-posx, -posy, -posz);
-		this.cameraTranslationMatrix.setUniform(this.gl, this.u_cameraTranslationMatrixLoc, false);
+		//this.cameraTranslationMatrix.setUniform(this.gl, this.u_cameraTranslationMatrixLoc, false);
 		
 		// Make sure the canvas is sized correctly.
 		var perspectiveMatrix = this.reshape(this.gl);
-		//perspectiveMatrix.multiply(this.cameraTranslationMatrix);
+		perspectiveMatrix.multiply(this.cameraTranslationMatrix);
 		perspectiveMatrix.setUniform(this.gl, this.u_projMatrixLoc, false);
 
 
@@ -227,8 +227,8 @@ function MjtWebGlToolkit()
 		this.init();
 		this.framerate = new Framerate("framerate");
 
-		var x = 20;
-		var y = 20;
+		var x = 50;
+		var y = 50;
 		
 		for (var j = 0; j <= y; j++)
 		{	
@@ -236,6 +236,7 @@ function MjtWebGlToolkit()
 			{
 				//var cube = this.createCube([ i * 2.1, j * 2.1, 0 ]);
 				var cube = new MjtWebGlCube(this.gl, [ i * 2.1, j * 2.1, 0 ], 1 + (0.1* i), [10*i,20*i,30*i]);
+				var cube = new MjtWebGlCube(this.gl, [ i * 2.1, j * 2.1, 0 ]);
 				//cube.positionArray = [ i * 2.1, j * 2.1, 0 ];
 				this.geometricObjects.push(cube);
 	

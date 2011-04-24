@@ -33,6 +33,7 @@ function MjtWebGlCube(context, positionArray, scale, rotationArray)
 
 		this.modelViewMatrix = new J3DIMatrix4();
 		this.modelViewMatrix.translate(this.positionArray);
+		this.modelViewMatrixFloat32 = this.modelViewMatrix.getAsFloat32Array();
 //		this.modelViewMatrix.scale(this.scale);
 //		this.modelViewMatrix.rotate(this.rotationArray[0],1,0,0);
 //		this.modelViewMatrix.rotate(this.rotationArray[1],0,1,0);
@@ -44,7 +45,8 @@ function MjtWebGlCube(context, positionArray, scale, rotationArray)
 	
 	this.paint = function paint(context)
 	{
-		this.modelViewMatrix.setUniform(this.context, mjtWebGlToolkit.u_modelViewMatrixLoc, false);
+		//this.modelViewMatrix.setUniform(this.context, mjtWebGlToolkit.u_modelViewMatrixLoc, false);
+		context.uniformMatrix4fv(mjtWebGlToolkit.u_modelViewMatrixLoc, false, this.modelViewMatrixFloat32);
 		context.drawElements(context.TRIANGLES, mjtWebGlToolkit.protoCube.numIndices, context.UNSIGNED_BYTE, 0);
 	};
 
