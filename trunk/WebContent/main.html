@@ -19,6 +19,8 @@
     uniform mat4 u_normalMatrix;
     uniform vec3 lightDir;
 
+	uniform mat4 u_cameraTranslationMatrix;
+
     attribute vec3 vNormal;
     attribute vec4 vColor;
     attribute vec4 vPosition;
@@ -28,11 +30,12 @@
 
     void main()
     {
-        //gl_Position = u_modelViewMatrix * u_projMatrix * vPosition;
-		gl_Position =  u_projMatrix * u_modelViewMatrix * vPosition;
+		//gl_Position =  u_projMatrix * u_modelViewMatrix * vPosition;
+		gl_Position =  u_projMatrix * u_cameraTranslationMatrix * u_modelViewMatrix * vPosition;
         v_Color = vColor;
         vec4 transNormal = u_normalMatrix * vec4(vNormal, 1);
-        v_Dot = max(dot(transNormal.xyz, lightDir), 0.5);
+		//mat4 test = transpose(u_cameraTranslationMatrix);
+        v_Dot = max(dot(transNormal.xyz, lightDir), 0.0);
     }
 </script>
 
@@ -48,11 +51,13 @@
     {
         //gl_FragColor = vec4(v_Color.xyz * v_Dot, v_Color.a);
 		//gl_FragColor = vec4(1, 0, 0, 1);  // Red
+		//gl_FragColor = vec4(v_Color.x* v_Dot,v_Color.y* v_Dot,v_Color.z* v_Dot, v_Color.a);
 		gl_FragColor = vec4(v_Color.x* v_Dot,v_Color.y* v_Dot,v_Color.z* v_Dot, v_Color.a);
     }
 </script>
 
 <script src="js/mjt-userinput.js"></script>
+<script src="js/mjt-webgl-cube.js"></script>
 <script src="js/main.js"></script>
 
 	
