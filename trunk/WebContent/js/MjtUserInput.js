@@ -1,5 +1,5 @@
 
-mjtUserInput = null;
+
 
 function MjtUserInput()
 {
@@ -33,12 +33,12 @@ function MjtUserInput()
 
 	this.init = function init()
 	{
-		document.onkeydown = mjtUserInput.handleKeyDown;
-		document.onkeyup = mjtUserInput.handleKeyUp;
+		console.log("initing MjtUserInput v0")
+		document.onkeydown = this.handleKeyDown;
+		document.onkeyup = this.handleKeyUp;
 		console.log("initting MjtUserInput")
 	};
-
-	$(document).ready(this.init);
+	this.init();
 }
 
 //mjtUserInput = new MjtUserInput();
