@@ -7,12 +7,12 @@ function MjtUserInput()
 
 	this.handleKeyUp = function handleKeyUp(event)
 	{
-		mjtUserInput.keyDownMap[event.keyCode] = false;
+		this.keyDownMap[event.keyCode] = false;
 	};
 	
 	this.handleKeyDown = function handleKeyDown(event)
 	{
-		mjtUserInput.keyDownMap[event.keyCode] = true;
+		this.keyDownMap[event.keyCode] = true;
 	};
 	
 	this.grabKeyPressTimeMillis = function grabKeyPressTimeMillis(keyCodes)
@@ -22,7 +22,7 @@ function MjtUserInput()
 		for(var i in arguments)
 		{
 			var keyCode = arguments[i];
-			if(mjtUserInput.keyDownMap[keyCode])
+			if(this.keyDownMap[keyCode])
 			{
 				result = 1;
 				break;
@@ -33,15 +33,9 @@ function MjtUserInput()
 
 	this.init = function init()
 	{
-		console.log("initing MjtUserInput v0")
-		document.onkeydown = this.handleKeyDown;
-		document.onkeyup = this.handleKeyUp;
-		console.log("initting MjtUserInput")
+		var o = this;
+		document.onkeydown = function(event){o.handleKeyDown(event);};
+		document.onkeyup = function(event){o.handleKeyUp(event);};
 	};
 	this.init();
 }
-
-//mjtUserInput = new MjtUserInput();
-//
-//
-//$(document).ready(mjtUserInput.init);
