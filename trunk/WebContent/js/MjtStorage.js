@@ -2,6 +2,13 @@
 mjt.require("MjtObjectPool");
 
 
+/**
+ * WebSQL exists on Chrome and Safari.
+ * IndexDB exists on Firefox (and maybe IE in future).
+ * FileAPI exists on Chrome and Firefox (Safari in future).
+ * WebStoreage is text only, and limited to 5mb.
+ * @returns
+ */
 function MjtStorage()
 {
 }
@@ -23,6 +30,11 @@ MjtStorage.prototype.get = function get(key)
  */
 MjtStorage.prototype.set = function set(key, object)
 {
-	var 
 	
+};
+
+MjtStorage.prototype.errorHandler = function errorHandler(error)
+{
+	console.log("MJTStorage Error: " + error);
+	console.log(error);
 };

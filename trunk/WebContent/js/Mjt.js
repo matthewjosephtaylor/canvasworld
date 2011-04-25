@@ -88,8 +88,8 @@ Mjt.prototype.callOnceAllTypesExist = function callOnceAllTypesExist(callbackFun
 	
 	if(callCallback)
 	{
-		console.log("all types exist calling callback function")
-		callbackFunction();
+		console.log("all types exist calling callback function: '" + callbackFunction.name + "'")
+		callbackFunction.call(window);
 	}	
 	else
 	{

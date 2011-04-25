@@ -49,7 +49,7 @@
     }
 </script>
 
-<script src="js/MjtJavascript.js"></script>
+<script src="js/Mjt.js"></script>
 
 	
 
@@ -63,7 +63,7 @@ canvas { /* border: 2px solid black; */
 	top: 100px;
 	left: 20px;
 	font-size: 2em;
-	color: blue;
+	color: black;
 }
 </style>
 </head>
@@ -74,7 +74,8 @@ canvas { /* border: 2px solid black; */
 </canvas>
 	<div class="text">Canvas World 0.1 (alpha)</div>
 	<div id="framerate"></div>
-	<button onclick="mjtWebGlToolkit.drawPicture();">Advance</button>
+	<div id="cubeCount"></div>
+	<button onclick="mjtWebGlToolkit.scene.addNextCubeset();">Boom!</button>
 </body>
 
 </html>

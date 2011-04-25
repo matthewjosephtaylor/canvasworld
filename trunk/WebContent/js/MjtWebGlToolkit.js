@@ -46,7 +46,7 @@ function MjtWebGlToolkit()
 		// used later.
 		this.VERTEX_ATTRIBUTES,
 		// The clear color and depth values
-		[ 0, 0, 0, 0.1 ], 10000);
+		[ 0, 0, 0, 0 ], 10000);
 		if (!this.gl)
 		{
 			throw "Unable to initialize WebGL";
@@ -79,17 +79,13 @@ function MjtWebGlToolkit()
 		this._perspectiveMatrix = null;
 	};
 
-//	this.camera = {};
-//	this.camera.eye = new J3DIVector3(0, 0, 20);
-//	this.camera.center = new J3DIVector3(0, 0, 0);
-//	this.camera.up = new J3DIVector3(0, 1, 0);
 
 	this.perspectiveMatrix = new J3DIMatrix4();
 
 	this.reshape = function reshape()
 	{
 		var canvas = document.getElementById(this.canvasId);
-		var windowWidth = window.innerWidth - 80;
+		var windowWidth = window.innerWidth-16;
 		var windowHeight = window.innerHeight - 80;
 
 		this.width = windowWidth;
@@ -176,6 +172,7 @@ function MjtWebGlToolkit()
 		}
 	};
 
+	this.scene = new MjtWebGlScene(this);
 	this.canvasId = null;
 	this.start = function start(canvasId)
 	{
@@ -190,34 +187,22 @@ function MjtWebGlToolkit()
 		this.init();
 		this.framerate = new Framerate("framerate");
 
-		var x = 1;
-		var y = 1;
-
-		for ( var j = 0; j <= y; j++)
-		{
-			for ( var i = -x; i <= x; i++)
-			{
-				// var cube = this.createCube([ i * 2.1, j * 2.1, 0 ]);
-				var cube = new MjtWebGlCube(this.gl, [ i * 2.1, j * 2.1, 0 ], 1 + (0.1 * i), [ 10 * i, 20 * i, 30 * i ]);
-				var cube = new MjtWebGlCube(this.gl, [ i * 2.1, j * 2.1, 0 ]);
-				// cube.positionArray = [ i * 2.1, j * 2.1, 0 ];
-				this.geometricObjects.push(cube);
-
-			}
-		}
+		//add sceen
+		this.scene.load();
+		
 
 		tk = this;
 		tk.lastTime = new Date().getTime();
-		var f = function()
+		(function f()
 		{
 			var currentTime = new Date().getTime();
-			window.requestAnimFrame(f, c);
 			tk.mjtWebGlCamera.move(currentTime - tk.lastTime);
 			tk.drawPicture();
 			tk.lastTime = currentTime;
-			// setTimeout(f, 100);
-		};
-		f();
+			setTimeout(f, 1000/58);
+			//window.requestAnimFrame(f, c);
+		})();
+		
 	};
 
 }

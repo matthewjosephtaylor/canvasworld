@@ -45,7 +45,6 @@ function MjtWebGlCube(context, positionArray, scale, rotationArray)
 	
 	this.paint = function paint(context)
 	{
-		//this.modelViewMatrix.setUniform(this.context, mjtWebGlToolkit.u_modelViewMatrixLoc, false);
 		context.uniformMatrix4fv(mjtWebGlToolkit.u_modelViewMatrixLoc, false, this.modelViewMatrixFloat32);
 		context.drawElements(context.TRIANGLES, mjtWebGlToolkit.protoCube.numIndices, context.UNSIGNED_BYTE, 0);
 	};
