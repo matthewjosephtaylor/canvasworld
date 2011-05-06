@@ -1,11 +1,12 @@
 
+
 function Mjt(javascriptPath, cssPath, enableBrowserCaching)
 {
-	this.enableBrowserCaching = enableBrowserCaching;
+	this.enableBrowserCaching = enableBrowserCaching; 
 	this.javascriptPath = javascriptPath;
 	this.cssPath = cssPath;
 	this.JQUERY_FILE_NAME = "jquery-1.5.2.min.js";
-
+	
 	this.loaded = {};
 	this.javascriptTypeNameToFileNameMap = {};
 };
@@ -19,10 +20,10 @@ Mjt.prototype.init = function init()
 
 Mjt.prototype.loadJavascript = function loadJavascript(fileName)
 {
-	if (!this.enableBrowserCaching)
+	if(!this.enableBrowserCaching)
 	{
 		fileName = fileName + "?" + new Date().getTime();
-	}
+	}	
 	var headElement = document.getElementsByTagName('head').item(0);
 	var scriptElement = document.createElement('script');
 	scriptElement.setAttribute("type", "text/javascript");
@@ -50,7 +51,7 @@ Mjt.prototype.register = function register(typeName, fileName)
 Mjt.prototype.getFileNameOfTypeName = function getFileNameOfTypeName(typeName)
 {
 	var result = this.javascriptTypeNameToFileNameMap[typeName];
-	if (!result)
+	if(!result)
 	{
 		result = typeName + ".js";
 		this.register(typeName, result);
@@ -61,35 +62,35 @@ Mjt.prototype.getFileNameOfTypeName = function getFileNameOfTypeName(typeName)
 Mjt.prototype.loadOnce = function loadOnce(typeName)
 {
 	var fileNameOfType = this.getFileNameOfTypeName(typeName);
-	if (!this.loaded[fileNameOfType])
+	if(!this.loaded[fileNameOfType])
 	{
 		console.log('loading: ' + name);
 		this.loaded[fileNameOfType] = true;
 		this.loadJavascript(fileNameOfType);
 	}
-
+	
 };
 
 Mjt.prototype.callOnceAllTypesExist = function callOnceAllTypesExist(callbackFunction, typeArray)
 {
 	var callCallback = true;
-	for (i in typeArray)
+	for(i in typeArray)
 	{
 		var type = typeArray[i];
 		var evalResult = eval("typeof " + type);
-		if (evalResult == "undefined")
+		if(evalResult == "undefined")
 		{
-			console.log("type doesn't exist yet: " + type);
+			console.log("type doesn't exist yet: " + type)
 			callCallback = false;
 			break;
-		}
+		}	
 	}
-
-	if (callCallback)
+	
+	if(callCallback)
 	{
 		console.log("all types exist calling callback function: '" + callbackFunction.name + "'")
 		callbackFunction.call(window);
-	}
+	}	
 	else
 	{
 		var o = this;
@@ -97,26 +98,25 @@ Mjt.prototype.callOnceAllTypesExist = function callOnceAllTypesExist(callbackFun
 		{
 			o.callOnceAllTypesExist(callbackFunction, typeArray);
 		};
-		setTimeout(f, 1000);
+		setTimeout(f,1000);
 	}
 };
+
 
 /**
  * If type is not defined load it from server Assumes type name == file name;
  * 
- * @param {string}
- *            name(s) of type(s) to load
- * @param {function}
- *            function to call once all types have been loaded.
+ * @param {string} name(s) of type(s) to load
+ * @param {function} function to call once all types have been loaded. 
  */
 Mjt.prototype.require = function require()
 {
 	var callbackFunction = null;
 	var typeArray = [];
-	for (i in arguments)
+	for(i in arguments)
 	{
 		var argument = arguments[i];
-		if (typeof argument == 'function')
+		if(typeof argument == 'function')
 		{
 			callbackFunction = argument;
 		}
@@ -124,31 +124,12 @@ Mjt.prototype.require = function require()
 		{
 			this.loadOnce(argument);
 			typeArray.push(argument);
-		}
+		}	
 	}
-	if (callbackFunction)
+	if(callbackFunction)
 	{
 		this.callOnceAllTypesExist(callbackFunction, typeArray);
 	}
-};
-
-Mjt.prototype.singletonify = function singletonify(constructorFunc)
-{
-	var instance = null;
-
-	window[constructorFunc.name] = new function()
-	{
-		this.getInstance = function()
-		{
-			if (instance == null)
-			{
-				instance = new constructorFunc();
-				instance.constructor = null;
-			}
-			return instance;
-		};
-
-	};
 };
 
 mjt = new Mjt("js", "css", false);

@@ -25,9 +25,9 @@ MjtWebGlScene.prototype.addNextCubeset = function addNextCubeset()
 	function f()
 	{
 		o._addNextCubeset();
-	};
-	f();
-	//setTimeout(f, 1);
+	}
+	;
+	setTimeout(f, 1);
 }
 
 MjtWebGlScene.prototype._addNextCubeset = function _addNextCubeset()

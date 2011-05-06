@@ -39,16 +39,12 @@ function MjtWebGlCube(context, positionArray, scale, rotationArray)
 //		this.modelViewMatrix.rotate(this.rotationArray[1],0,1,0);
 //		this.modelViewMatrix.rotate(this.rotationArray[2],0,0,1);
 		//modelViewMatrix.setUniform(this.context, mjtWebGlToolkit.u_modelViewMatrixLoc, false);
-		
-		//this.worker = new Worker('js/MjtSandboxWorker.js');
 
 	};
 	
 	
 	this.paint = function paint(context)
 	{
-		//this.worker.postMessage({context: context, mjtWebGlToolkit: mjtWebGlToolkit, modelViewMatrixFloat32 : this.modelViewMatrixFloat32, console : this.console});
-
 		context.uniformMatrix4fv(mjtWebGlToolkit.u_modelViewMatrixLoc, false, this.modelViewMatrixFloat32);
 		context.drawElements(context.TRIANGLES, mjtWebGlToolkit.protoCube.numIndices, context.UNSIGNED_BYTE, 0);
 	};
