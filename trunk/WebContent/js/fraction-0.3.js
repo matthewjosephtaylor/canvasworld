@@ -69,7 +69,7 @@ THE SOFTWARE.
  *      new Fraction('2 3/4') --> 11/4  (prints as 2 3/4)
  *
  */
-Fraction = function(numerator, denominator)
+Fraction = function Fraction(numerator, denominator)
 {
     /* double argument invocation */
     if (numerator && denominator) {
@@ -120,14 +120,14 @@ Fraction = function(numerator, denominator)
 }
 
 
-Fraction.prototype.clone = function()
+Fraction.prototype.clone = function clone()
 {
     return new Fraction(this.numerator, this.denominator);
 }
 
 
 /* pretty-printer, converts fractions into whole numbers and fractions */
-Fraction.prototype.toString = function()
+Fraction.prototype.toString = function toString()
 {
     var wholepart = Math.floor(this.numerator / this.denominator);
     var numerator = this.numerator % this.denominator 
@@ -142,7 +142,7 @@ Fraction.prototype.toString = function()
 
 
 /* destructively rescale the fraction by some integral factor */
-Fraction.prototype.rescale = function(factor)
+Fraction.prototype.rescale = function rescale(factor)
 {
     this.numerator *= factor;
     this.denominator *= factor;
@@ -150,7 +150,7 @@ Fraction.prototype.rescale = function(factor)
 }
 
 
-Fraction.prototype.add = function(b)
+Fraction.prototype.add = function add(b)
 {
     var a = this.clone();
     if (b instanceof Fraction) {
@@ -168,7 +168,7 @@ Fraction.prototype.add = function(b)
 }
 
 
-Fraction.prototype.subtract = function(b)
+Fraction.prototype.subtract = function subtract(b)
 {
     var a = this.clone();
     if (b instanceof Fraction) {
@@ -186,7 +186,7 @@ Fraction.prototype.subtract = function(b)
 }
 
 
-Fraction.prototype.multiply = function(b)
+Fraction.prototype.multiply = function multiply(b)
 {
     var a = this.clone();
     if (b instanceof Fraction)
@@ -201,7 +201,7 @@ Fraction.prototype.multiply = function(b)
     return a.normalize();
 }
 
-Fraction.prototype.divide = function(b)
+Fraction.prototype.divide = function divide(b)
 {
     var a = this.clone();
     if (b instanceof Fraction)
@@ -216,7 +216,7 @@ Fraction.prototype.divide = function(b)
     return a.normalize();
 }
 
-Fraction.prototype.equals = function(b)
+Fraction.prototype.equals = function equals(b)
 {
     if (!(b instanceof Fraction)) {
         b = new Fraction(b);
@@ -289,7 +289,7 @@ Fraction.prototype.normalize = (function()
 
 /* Takes two numbers and returns their greatest common factor.
  */
-Fraction.gcf = function(a, b)
+Fraction.gcf = function gcf(a, b)
 {
 
     var common_factors = [];
@@ -327,7 +327,7 @@ Fraction.gcf = function(a, b)
 
 // Adapted from: 
 // http://www.btinternet.com/~se16/js/factor.htm
-Fraction.primeFactors = function(n) 
+Fraction.primeFactors = function primeFactors(n) 
 {
 
     var num = n;
