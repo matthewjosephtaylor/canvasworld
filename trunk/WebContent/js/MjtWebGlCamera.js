@@ -1,7 +1,7 @@
 
-mjt.require("MjtUserInput", function defineMjtActorCallback()
+mjt.require("MjtUserInput", function defineMjtWebGlCamera()
 {
-	function MjtWebGlCamera()
+	MjtWebGlCamera = function MjtWebGlCamera()
 	{
 		this.yaw = 0;
 		this.pitch = 0;
@@ -23,6 +23,8 @@ mjt.require("MjtUserInput", function defineMjtActorCallback()
 			this.moveDown();
 			this.lookLeft();
 			this.lookRight();
+			this.lookUp();
+			this.lookDown();
 		};
 
 		this.degToRad = function degToRad(degrees)
@@ -75,13 +77,27 @@ mjt.require("MjtUserInput", function defineMjtActorCallback()
 
 		this.moveUp = function moveUp()
 		{
+			var keyPressTime = this.mjtUserInput.grabKeyPress(33);
+			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 1;
+			this.posy += cameraStepAmount;
+		};
+
+		this.moveDown = function moveDown()
+		{
+			var keyPressTime = this.mjtUserInput.grabKeyPress(34);
+			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 1;
+			this.posy -= cameraStepAmount;
+		};
+
+		this.lookUp = function lookUp()
+		{
 			var keyPressTime = this.mjtUserInput.grabKeyPress(38);
 			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 1;
 			this.pitch += cameraStepAmount;
 			// mjtWebGlToolkit.drawPicture();
 		};
 
-		this.moveDown = function moveDown()
+		this.lookDown = function lookDown()
 		{
 			var keyPressTime = this.mjtUserInput.grabKeyPress(40);
 			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 1;

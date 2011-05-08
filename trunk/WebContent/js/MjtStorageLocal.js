@@ -25,6 +25,12 @@ mjt.require("MjtStorage", function mjtStorageLocalDefinitionCallback()
 		//console.log("persisting local... ")
 		localStorage.setItem("mjt_store", JSON.stringify(this.local));
 	};
+	
+	MjtStorageLocal.prototype.clear = function clear(clear)
+	{
+		this.local = [];
+		this.sync();
+	}
 
 	// criteria in the form of [object_type: [[attribute_name,value_type, value]]]
 	MjtStorageLocal.prototype.get = function get(criteria, cb, matchCountCb)

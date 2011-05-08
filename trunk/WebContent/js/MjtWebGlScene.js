@@ -1,4 +1,4 @@
-mjt.require("MjtWebGlBlock", function defineMjtWebGlSceneCallback()
+mjt.require("MjtWebGlBlock","MjtStorageLocal", function defineMjtWebGlSceneCallback()
 {
 
 	MjtWebGlScene = function MjtWebGlScene()
@@ -19,10 +19,18 @@ mjt.require("MjtWebGlBlock", function defineMjtWebGlSceneCallback()
 		// mjtWebGlToolkit.geometricObjects.push(cube);
 		// document.getElementById("cubeCount").innerHTML = "Cube Count: " + mjtWebGlToolkit.geometricObjects.length;
 	};
-	
-	MjtWebGlScene.prototype.persist = function persist()
+
+	MjtWebGlScene.prototype.clear = function clear()
 	{
 		var store = MjtStorageLocal.getInstance();
+		MjtWebGlToolkit.getInstance().geometricObjects = [];
+	};
+
+	
+	MjtWebGlScene.prototype.save = function save()
+	{
+		var store = MjtStorageLocal.getInstance();
+		store.clear();
 		//console.log("persisting: " + MjtWebGlToolkit.getInstance().geometricObjects)
 		for ( var i in MjtWebGlToolkit.getInstance().geometricObjects)
 		{
@@ -106,4 +114,6 @@ mjt.require("MjtWebGlBlock", function defineMjtWebGlSceneCallback()
 
 	};
 
+	mjt.singletonify(MjtWebGlScene);
+	
 });
