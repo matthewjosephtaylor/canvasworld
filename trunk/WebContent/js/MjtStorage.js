@@ -1,4 +1,4 @@
-mjt.register("Fraction","fraction-0.3.js");
+mjt.register("Fraction", "fraction-0.3.js");
 /**
  * WebSQL exists on Chrome and Safari. IndexDB exists on Firefox (and maybe IE in future). FileAPI exists on Chrome and Firefox (Safari in future). WebStoreage is text only, and limited to 5mb.
  * 
@@ -64,8 +64,9 @@ mjt.require("Fraction", function mjtStorageDefinitionCallback()
 
 	MjtStorage.prototype.getAssembledObject = function getAssembledObject(object, cb)
 	{
-		this.getAssembler(object.constructor.name, function(assemblerFunction)
+		this.getAssembler(this.getConstructorName(object), function(assemblerFunction)
 		{
+			//console.log("calling assemblerFunction: " + assemblerFunction.name)
 			assemblerFunction(object, function(assembledObject)
 			{
 				cb(assembledObject);
@@ -83,7 +84,7 @@ mjt.require("Fraction", function mjtStorageDefinitionCallback()
 	 */
 	MjtStorage.prototype.addDigester = function addDigester(clazz, digesterFunction)
 	{
-		console.log("adding digester for: " + clazz);
+		//console.log("adding digester for: " + clazz);
 
 		if (typeof clazz == 'string')
 		{
@@ -108,9 +109,29 @@ mjt.require("Fraction", function mjtStorageDefinitionCallback()
 		cb(result);
 	};
 
+	MjtStorage.prototype.getConstructorName = function getConstructorName(object)
+	{
+		result = null;
+		if(object.constructor)
+		{
+			result = object.constructor.name;
+		}
+		else if(object.prototype.constructor)
+		{
+			result = object.prototype.constructor;
+		}	
+
+		if (result == null || result == "")
+		{
+			console.log(object);
+			throw "Unable to determine constructor name of object: " + object;
+		}
+		return result;
+	}
+
 	MjtStorage.prototype.getDigestedObject = function getDigestedObject(object, cb)
 	{
-		this.getDigester(object.constructor.name, function(digesterFunction)
+		this.getDigester(this.getConstructorName(object), function(digesterFunction)
 		{
 			digesterFunction(object, function(digestedObject)
 			{
@@ -134,9 +155,9 @@ mjt.require("Fraction", function mjtStorageDefinitionCallback()
 				}
 				else
 				{
-					console.log("attribute does not match criteria for object/criteria:");
-					console.log(objectAttributeArray);
-					console.log(criteriaAttributeArray);
+//					console.log("attribute does not match criteria for object/criteria:");
+//					console.log(objectAttributeArray);
+//					console.log(criteriaAttributeArray);
 					result = false;
 					break;
 				}
@@ -153,6 +174,7 @@ mjt.require("Fraction", function mjtStorageDefinitionCallback()
 		var objectAttributeArray = object[1];
 		if (object[0] == criteria[0])
 		{
+			result = true;
 			for ( var i = 0; i < criteriaAttributeArray.length; i++)
 			{
 				for ( var j = 0; j < objectAttributeArray.length; j++)
@@ -209,7 +231,15 @@ mjt.require("Fraction", function mjtStorageDefinitionCallback()
 		var attributes = [];
 		for ( var attributeName in object)
 		{
+			if(attributeName.indexOf("_") == 0)
+			{
+				continue;
+			}	
 			var value = object[attributeName];
+			if(value instanceof Function)
+			{
+				continue;
+			}	
 			var valueTypeName = MjtStorage.getInstance().getTypeNameAsString(value);
 			attributes.push([ attributeName, valueTypeName, value ]);
 		}
@@ -221,15 +251,40 @@ mjt.require("Fraction", function mjtStorageDefinitionCallback()
 	{
 		var objectTypeName = digestedObject[0];
 		var attributes = digestedObject[1];
-		var valueArray = [];
+//		console.log("attempting to construct new: " + objectTypeName);
+		var result = new window[objectTypeName]();
 		for ( var i = 0; i < attributes.length; i++)
 		{
 			var attributeIdx = attributes[i][0];
 			var valueTypeName = attributes[i][1];
 			var value = attributes[i][2];
-			valueArray[attributeIdx] = window[valueTypeName](value);
+			
+			if(valueTypeName == 'undefined')
+			{
+				
+			}
+			else if(valueTypeName == 'null')
+			{
+				result[attributeIdx] = null;
+			}
+			else if(valueTypeName == 'Array')
+			{
+				result[attributeIdx] = value;
+			}	
+			else
+			{
+				// try conversion first, then new object construction.
+				try
+				{
+					result[attributeIdx] = window[valueTypeName](value);
+				}
+				catch (e)
+				{
+					result[attributeIdx] = new window[valueTypeName](value);
+				}
+			}	
+
 		}
-		var result = new window[objectTypeName](valueArray);
 		cb(result);
 	});
 
@@ -263,15 +318,14 @@ mjt.require("Fraction", function mjtStorageDefinitionCallback()
 		var result = new window[objectTypeName](valueArray);
 		cb(result);
 	});
-	
-	
+
 	MjtStorage.getInstance().addDigester(Fraction.prototype.constructor.name, function fractionDigester(object, cb)
 	{
 		var objectTypeName = Fraction.prototype.constructor.name;
 		var attributes = [];
-		attributes.push(["numerator", "Number", object.numerator]);
-		attributes.push(["denominator", "Number", object.denominator]);
-		var result = [objectTypeName, attributes ];
+		attributes.push([ "numerator", "Number", object.numerator ]);
+		attributes.push([ "denominator", "Number", object.denominator ]);
+		var result = [ objectTypeName, attributes ];
 		cb(result);
 	});
 
@@ -280,12 +334,9 @@ mjt.require("Fraction", function mjtStorageDefinitionCallback()
 	{
 		var objectTypeName = digestedObject[0];
 		var attributes = digestedObject[1];
-		var valueArray = [Number(attributes[0][2]),Number(attributes[1][2])];
+		var valueArray = [ Number(attributes[0][2]), Number(attributes[1][2]) ];
 		var result = new window[objectTypeName](valueArray);
 		cb(result);
 	});
 
-	
-	
-	
 });

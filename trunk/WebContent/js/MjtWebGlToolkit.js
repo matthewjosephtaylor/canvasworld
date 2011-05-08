@@ -3,7 +3,7 @@ mjt.register("J3DIMatrix4", "J3DIMath.js");
 mjt.register("initWebGL", "J3DI.js");
 mjt.register("window.requestAnimFrame", "webgl-utils.js");
 
-mjt.require("initWebGL", "J3DIVector3", "J3DIMatrix4", "window.requestAnimFrame", "MjtUserInput", "MjtWebGlCamera", function defineMjtWebGlToolkitCallback()
+mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.requestAnimFrame", "MjtUserInput", "MjtWebGlCamera", function defineMjtWebGlToolkitCallback()
 {
 
 	MjtWebGlToolkit = function MjtWebGlToolkit()
@@ -15,7 +15,6 @@ mjt.require("initWebGL", "J3DIVector3", "J3DIMatrix4", "window.requestAnimFrame"
 		this.height = -1;
 		this.gl = null;
 
-		this.mjtWebGlCamera = new MjtWebGlCamera();
 
 		this.protoCube = null;
 
@@ -117,11 +116,12 @@ mjt.require("initWebGL", "J3DIVector3", "J3DIMatrix4", "window.requestAnimFrame"
 		// Clear the canvas
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
+		var mjtWebGlCamera = MjtWebGlCamera.getInstance();
 		// var cameraTranslationMatrix = new J3DIMatrix4();
 		this.cameraTranslationMatrix.makeIdentity();
-		this.cameraTranslationMatrix.rotate(-this.mjtWebGlCamera.pitch, 1, 0, 0);
-		this.cameraTranslationMatrix.rotate(-this.mjtWebGlCamera.yaw, 0, 1, 0);
-		this.cameraTranslationMatrix.translate(-this.mjtWebGlCamera.posx, -this.mjtWebGlCamera.posy, -this.mjtWebGlCamera.posz);
+		this.cameraTranslationMatrix.rotate(-mjtWebGlCamera.pitch, 1, 0, 0);
+		this.cameraTranslationMatrix.rotate(-mjtWebGlCamera.yaw, 0, 1, 0);
+		this.cameraTranslationMatrix.translate(-mjtWebGlCamera.posx, -mjtWebGlCamera.posy, -mjtWebGlCamera.posz);
 		// this.cameraTranslationMatrix.setUniform(this.gl, this.u_cameraTranslationMatrixLoc, false);
 
 		// Make sure the canvas is sized correctly.
@@ -172,7 +172,9 @@ mjt.require("initWebGL", "J3DIVector3", "J3DIMatrix4", "window.requestAnimFrame"
 		(function f()
 		{
 			var currentTime = new Date().getTime();
-			tk.mjtWebGlCamera.move(currentTime - tk.lastTime);
+			var elapsedTime = currentTime - tk.lastTime;
+			MjtWebGlCamera.getInstance().move(elapsedTime);
+			MjtActor.getInstance().act(elapsedTime);
 			tk.drawPicture();
 			tk.lastTime = currentTime;
 			setTimeout(f, 1000 / 30);

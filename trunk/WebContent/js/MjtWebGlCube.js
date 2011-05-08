@@ -30,9 +30,9 @@ mjt.require("MjtWebGlToolkit", function defineMjtWebGlCubeCallback()
 		context.bindBuffer(context.ELEMENT_ARRAY_BUFFER, this.protoCube.indexObject);
 	};
 
-	MjtWebGlCube.prototype.paint = function paint(context)
+	MjtWebGlCube.prototype.paint = function paint(context, modelViewMatrixFloat32)
 	{
-		context.uniformMatrix4fv(MjtWebGlToolkit.getInstance().u_modelViewMatrixLoc, false, this.modelViewMatrixFloat32);
+		context.uniformMatrix4fv(MjtWebGlToolkit.getInstance().u_modelViewMatrixLoc, false, modelViewMatrixFloat32);
 		context.drawElements(context.TRIANGLES, this.protoCube.numIndices, context.UNSIGNED_BYTE, 0);
 	};
 

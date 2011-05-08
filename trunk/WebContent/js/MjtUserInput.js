@@ -1,7 +1,7 @@
 
 
 
-function MjtUserInput()
+MjtUserInput = function MjtUserInput()
 {
 	this.keyDownMap = {};
 
@@ -15,7 +15,7 @@ function MjtUserInput()
 		this.keyDownMap[event.keyCode] = true;
 	};
 	
-	this.grabKeyPressTimeMillis = function grabKeyPressTimeMillis(keyCodes)
+	this.grabKeyPress = function grabKeyPress(keyCodes)
 	{
 		var result = 0;
 		
@@ -39,3 +39,5 @@ function MjtUserInput()
 	};
 	this.init();
 }
+
+mjt.singletonify(MjtUserInput);

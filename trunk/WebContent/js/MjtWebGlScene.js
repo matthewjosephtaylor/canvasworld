@@ -8,9 +8,9 @@ mjt.require("MjtWebGlBlock", function defineMjtWebGlSceneCallback()
 		this.i = 0;
 		this.j = 0;
 
-	}
+	};
 
-	MjtWebGlScene.prototype.load = function load()
+	MjtWebGlScene.prototype.createNew = function createNew()
 	{
 		this.x = 10;
 		this.y = 10;
@@ -18,7 +18,42 @@ mjt.require("MjtWebGlBlock", function defineMjtWebGlSceneCallback()
 		// var cube = new MjtWebGlCube(mjtWebGlToolkit.gl, [0,0,90]);
 		// mjtWebGlToolkit.geometricObjects.push(cube);
 		// document.getElementById("cubeCount").innerHTML = "Cube Count: " + mjtWebGlToolkit.geometricObjects.length;
-	}
+	};
+	
+	MjtWebGlScene.prototype.persist = function persist()
+	{
+		var store = MjtStorageLocal.getInstance();
+		//console.log("persisting: " + MjtWebGlToolkit.getInstance().geometricObjects)
+		for ( var i in MjtWebGlToolkit.getInstance().geometricObjects)
+		{
+			var geometricObject = MjtWebGlToolkit.getInstance().geometricObjects[i];
+			store.set(geometricObject);
+		}
+	};
+	
+	MjtWebGlScene.prototype.load = function load()
+	{
+		var store = MjtStorageLocal.getInstance();
+		var lastResult = null;
+		store.get([ MjtWebGlBlock.prototype.constructor.name, [] ], function(result)
+		{
+			MjtWebGlToolkit.getInstance().geometricObjects.push(result);
+			document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
+//			console.log("Got result: ");
+//			console.log(JSON.stringify(result));
+//			console.log(result);
+//			resultArray.push(result);
+			lastResult = result;
+		}, function(matchCount)
+		{
+			console.log("matchCount: " + matchCount)
+			console.log(lastResult);
+//			console.log("resultArray.length: " + resultArray.length)
+//			console.log(resultArray);
+		});
+
+	};
+	
 
 	MjtWebGlScene.prototype.addNextCubeset = function addNextCubeset()
 	{
@@ -30,7 +65,7 @@ mjt.require("MjtWebGlBlock", function defineMjtWebGlSceneCallback()
 		;
 		f();
 		// setTimeout(f, 1);
-	}
+	};
 
 	MjtWebGlScene.prototype._addNextCubeset = function _addNextCubeset()
 	{
@@ -53,8 +88,8 @@ mjt.require("MjtWebGlBlock", function defineMjtWebGlSceneCallback()
 					{
 						// try
 						{
-							var cube = new MjtWebGlBlock([ i * 2.5, j * 2.5, Math.random() * x * 5 ]);
-							MjtWebGlToolkit.getInstance().geometricObjects.push(cube);
+							var block = new MjtWebGlBlock([ i * 2.5, j * 2.5, Math.random() * x * 5 ]);
+							MjtWebGlToolkit.getInstance().geometricObjects.push(block);
 							document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
 						}
 						// catch (e)
@@ -63,7 +98,9 @@ mjt.require("MjtWebGlBlock", function defineMjtWebGlSceneCallback()
 						// }
 					};
 				};
-				setTimeout(f(this.i, this.j, this.x), Math.random() * 10000);
+				f(this.i, this.j, this.x)();
+				
+				//setTimeout(f(this.i, this.j, this.x), Math.random() * 10000);
 			}
 		}
 

@@ -16,34 +16,42 @@ mjt.require("MjtStorage", function mjtStorageLocalDefinitionCallback()
 			tableString = JSON.stringify([]);
 		}
 		this.local = JSON.parse(tableString);
-		console.log("retrieved local:");
-		console.log(this.local);
+//		console.log("retrieved local:");
+//		console.log(this.local);
 	};
 
-
-	MjtStorageLocal.prototype._persist = function _persist()
+	MjtStorageLocal.prototype.sync = function sync()
 	{
-		console.log("persisting local... ")
+		//console.log("persisting local... ")
 		localStorage.setItem("mjt_store", JSON.stringify(this.local));
 	};
 
-
 	// criteria in the form of [object_type: [[attribute_name,value_type, value]]]
-	MjtStorageLocal.prototype.get = function get(criteria, cb)
+	MjtStorageLocal.prototype.get = function get(criteria, cb, matchCountCb)
 	{
-		console.log("testing criteria: " + JSON.stringify(criteria));
-		var result = [];
-		for(var i =0; i< this.local.length; i++)
+//		console.log("testing criteria: " + JSON.stringify(criteria));
+		var matchCount = 0;
+		for ( var i = 0; i < this.local.length; i++)
 		{
 			var localObject = this.local[i];
 			var match = this.objectMatchesCriteria(localObject, criteria)
-			if(match == true)
+			if (match == true)
 			{
-				console.log("matches: " + JSON.stringify(localObject));
-				result.push(localObject);
-			}	
+//				console.log("matches: " + JSON.stringify(localObject));
+				this.getAssembledObject(localObject, function(assembeledObject)
+				{
+					cb(assembeledObject);
+
+				});
+				matchCount++;
+				// result.push(localObject);
+			}
 		}
-		cb(result);
+		if (matchCountCb)
+		{
+			matchCountCb(matchCount);
+		}
+		// cb(result);
 	};
 
 	MjtStorageLocal.prototype.set = function set(object, cb)
@@ -51,18 +59,19 @@ mjt.require("MjtStorage", function mjtStorageLocalDefinitionCallback()
 		var parent = this;
 		this.getDigestedObject(object, function(digestedObject)
 		{
-			console.log("digestedObject:");
-			console.log(digestedObject);
-			console.log("this:");
-			console.log(this);
+//			console.log("digestedObject:");
+//			console.log(digestedObject);
+//			console.log("this:");
+//			console.log(this);
 			parent.local.push(digestedObject);
-			parent._persist();
+			parent.sync();
 		});
-		
+
 		if (cb)
 		{
 			cb(true);
-		};
+		}
+		;
 	};
 
 	mjt.singletonify(MjtStorageLocal);

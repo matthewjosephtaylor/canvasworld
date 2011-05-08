@@ -1,31 +1,43 @@
 mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 {
 
-	MjtWebGlBlock = function MjtWebGlBlock(positionArray, scale, rotationArray)
+	MjtWebGlBlock = function MjtWebGlBlock(positionArray, rotationArray, scale)
 	{
 		this.positionArray = positionArray;
 		this.rotationArray = rotationArray;
 		this.scale = scale;
-		this.updateModelViewMatrix();
 	};
-
-	MjtWebGlBlock.prototype = MjtWebGlCube.getInstance();
 
 	MjtWebGlBlock.prototype.updateModelViewMatrix = function updateModelViewMatrix()
 	{
-		this.modelViewMatrix = new J3DIMatrix4();
-		this.modelViewMatrix.translate(this.positionArray);
+		var modelViewMatrix = new J3DIMatrix4();
+		modelViewMatrix.translate(this.positionArray);
 		if (this.scale)
 		{
-			this.modelViewMatrix.scale(this.scale);
+			modelViewMatrix.scale(this.scale);
 		}
 		if (this.rotationArray)
 		{
-			this.modelViewMatrix.rotate(this.rotationArray[0], 1, 0, 0);
-			this.modelViewMatrix.rotate(this.rotationArray[1], 0, 1, 0);
-			this.modelViewMatrix.rotate(this.rotationArray[2], 0, 0, 1);
+			modelViewMatrix.rotate(this.rotationArray[0], 1, 0, 0);
+			modelViewMatrix.rotate(this.rotationArray[1], 0, 1, 0);
+			modelViewMatrix.rotate(this.rotationArray[2], 0, 0, 1);
 		}
-		this.modelViewMatrixFloat32 = this.modelViewMatrix.getAsFloat32Array();
+		this._modelViewMatrixFloat32 = modelViewMatrix.getAsFloat32Array();
+	};
+	
+	MjtWebGlBlock.prototype.getModelViewMatrixFloat32 = function getModelViewMatrixFloat32()
+	{
+		if(!this._modelViewMatrixFloat32)
+		{
+			this.updateModelViewMatrix();
+		}
+		return this._modelViewMatrixFloat32;
+	}
+
+	MjtWebGlBlock.prototype.paint = function paint(context)
+	{
+		MjtWebGlCube.getInstance().paint(context, this.getModelViewMatrixFloat32());
 	};
 
+	
 });
