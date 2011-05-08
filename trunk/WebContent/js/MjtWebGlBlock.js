@@ -1,20 +1,27 @@
 mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 {
 
-	MjtWebGlBlock = function MjtWebGlBlock(positionArray, rotationArray, scale)
+	MjtWebGlBlock = function MjtWebGlBlock(positionArray, rotationArray, scaleArray)
 	{
 		this.positionArray = positionArray;
 		this.rotationArray = rotationArray;
-		this.scale = scale;
+		this.scaleArray = scaleArray;
+		this.frontColor = [ 0, 0, 1, 1 ];
+		this.rightColor = [ 1, 0, 0, 1 ];
+		this.topColor = [ 0, 1, 0, 1 ];
+		this.leftColor = [ 1, 1, 0, 1 ];
+		this.bottomColor = [ 1, 0, 1, 1 ];
+		this.backColor = [ 0, 1, 1, 1 ];
+
 	};
 
 	MjtWebGlBlock.prototype.updateModelViewMatrix = function updateModelViewMatrix()
 	{
 		var modelViewMatrix = new J3DIMatrix4();
 		modelViewMatrix.translate(this.positionArray);
-		if (this.scale)
+		if (this.scaleArray)
 		{
-			modelViewMatrix.scale(this.scale);
+			modelViewMatrix.scale(this.scaleArray);
 		}
 		if (this.rotationArray)
 		{
@@ -32,11 +39,47 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 			this.updateModelViewMatrix();
 		}
 		return this._modelViewMatrixFloat32;
+	};
+	
+	MjtWebGlBlock.prototype.getColorsArray = function getColorsArray(context)
+	{
+		if(!this._colorsArray)
+		{
+			this.updateColorsArray(context);
+		}
+		return this._colorsArray;
 	}
+
 
 	MjtWebGlBlock.prototype.paint = function paint(context)
 	{
+		this.setupColorBuffer(context);
 		MjtWebGlCube.getInstance().paint(context, this.getModelViewMatrixFloat32());
+	};
+
+	MjtWebGlBlock.prototype.updateColorsArray = function updateColorsArray(context)
+	{
+		var oneDimensionalColorArray = MjtWebGlCube.getInstance().joinArrays4(this.frontColor, this.rightColor, this.topColor, this.leftColor, this.bottomColor, this.backColor);
+
+		this._colorsArray = new Float32Array(oneDimensionalColorArray);
+		//this._colorsArray = new Uint8Array(oneDimensionalColorArray);
+		this._colorObject = context.createBuffer();
+		context.bindBuffer(context.ARRAY_BUFFER, this._colorObject);
+		context.bufferData(context.ARRAY_BUFFER, this._colorsArray, context.STATIC_DRAW);
+
+	};
+	
+	MjtWebGlBlock.prototype.setupColorBufferData = function setupColorBufferData( context )
+	{
+		//context.bufferData(context.ARRAY_BUFFER, this._colorsArray, context.STATIC_DRAW);
+	};
+	
+	MjtWebGlBlock.prototype.setupColorBuffer = function setupColorBuffer( context )
+	{
+		this.getColorsArray(context);
+//		context.bindBuffer(context.ARRAY_BUFFER, this._colorObject);
+		MjtWebGlToolkit.getInstance().addVertexShaderAttribute("vColor", this._colorObject, context.FLOAT, 4);
+		//this.setupColorBufferData(context);
 	};
 
 	

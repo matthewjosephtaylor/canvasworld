@@ -10,6 +10,15 @@ mjt.require("MjtWebGlBlock","MjtStorageLocal", function defineMjtWebGlSceneCallb
 
 	};
 
+	MjtWebGlScene.prototype.createHorizon = function createHorizon()
+	{
+		var h = 1000;
+		var block = new MjtWebGlBlock([-h/2,-10,-h/2],null,[h,0.1,h]);
+		block.topColor=[255/255,223/255,128/255,1];
+		MjtWebGlToolkit.getInstance().geometricObjects.push(block);
+	};
+
+	
 	MjtWebGlScene.prototype.createNew = function createNew()
 	{
 		this.x = 10;
@@ -41,6 +50,7 @@ mjt.require("MjtWebGlBlock","MjtStorageLocal", function defineMjtWebGlSceneCallb
 	
 	MjtWebGlScene.prototype.load = function load()
 	{
+		this.createHorizon();
 		var store = MjtStorageLocal.getInstance();
 		var lastResult = null;
 		store.get([ MjtWebGlBlock.prototype.constructor.name, [] ], function(result)

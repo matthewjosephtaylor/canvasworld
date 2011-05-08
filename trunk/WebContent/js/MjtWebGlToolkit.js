@@ -29,6 +29,8 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		this.modelViewMatrix = new J3DIMatrix4();
 		this.cameraTranslationMatrix = new J3DIMatrix4();
 
+		
+		this._vertexIdxCache = {};
 		this.init();
 		this.start();
 
@@ -46,12 +48,19 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		}
 	};
 
+	
+	
 	MjtWebGlToolkit.prototype.addVertexShaderAttribute = function addVertexShaderAttribute(attributeName, bufferObject, componentPrimitiveType, vertexDimensions)
 	{
-		var attributeIdx = this.gl.getAttribLocation(this.gl.program, attributeName);
+		var attributeIdx = this._vertexIdxCache[attributeName];
+		if(!attributeIdx)
+		{
+			attributeIdx = this.gl.getAttribLocation(this.gl.program, attributeName);
+			this._vertexIdxCache[attributeName] = attributeIdx;
+			this.gl.enableVertexAttribArray(attributeIdx);
+		}	
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, bufferObject);
 		this.gl.vertexAttribPointer(attributeIdx, vertexDimensions, componentPrimitiveType, false, 0, 0);
-		this.gl.enableVertexAttribArray(attributeIdx);
 	};
 
 	MjtWebGlToolkit.prototype.init = function init()

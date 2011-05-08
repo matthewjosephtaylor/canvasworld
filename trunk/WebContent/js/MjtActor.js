@@ -33,6 +33,8 @@ mjt.require("MjtUserInput",  function defineMjtActorCallback()
 			var z = camera.posz + Math.sin(this.degToRad(-camera.yaw));
 			var y = camera.posy;
 			var block = new MjtWebGlBlock([ x,y,z ], [0,camera.yaw,0]);
+			block.frontColor = [0.1,0.5,0.5,1];
+
 //			console.log("block pos: " + JSON.stringify(block.positionArray));
 			MjtWebGlToolkit.getInstance().geometricObjects.push(block);
 			document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
