@@ -77,14 +77,14 @@ mjt.require("MjtUserInput", function defineMjtWebGlCamera()
 
 		this.moveUp = function moveUp()
 		{
-			var keyPressTime = this.mjtUserInput.grabKeyPress(33);
+			var keyPressTime = this.mjtUserInput.grabKeyPress(82);
 			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 1;
 			this.posy += cameraStepAmount;
 		};
 
 		this.moveDown = function moveDown()
 		{
-			var keyPressTime = this.mjtUserInput.grabKeyPress(34);
+			var keyPressTime = this.mjtUserInput.grabKeyPress(86);
 			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 1;
 			this.posy -= cameraStepAmount;
 		};
