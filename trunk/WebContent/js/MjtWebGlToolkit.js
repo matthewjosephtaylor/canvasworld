@@ -110,10 +110,6 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		// Set up light direction uniform
 		this.gl.uniform3f(this.gl.getUniformLocation(this.gl.program, "lightDir"), 0, 0, 1);
 
-//		this.u_modelViewMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_modelViewMatrix");
-//		this.u_projMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_projMatrix");
-//		this.u_normalMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_normalMatrix");
-
 		this.framerate = new Framerate("framerate");
 
 		this.log("Finished init.");

@@ -12,6 +12,7 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 		this.leftColor = [ 1, 1, 0, 1 ];
 		this.bottomColor = [ 1, 0, 1, 1 ];
 		this.backColor = [ 0, 1, 1, 1 ];
+		this.textureImage = null;
 
 	};
 
@@ -41,13 +42,13 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 		return this._modelViewMatrixFloat32;
 	};
 	
-	MjtWebGlBlock.prototype.getColorsArray = function getColorsArray(context)
+	MjtWebGlBlock.prototype.getColorObject = function getColorObject(context)
 	{
-		if(!this._colorsArray)
+		if(!this._colorObject)
 		{
-			this.updateColorsArray(context);
+			this.updateColorObject(context);
 		}
-		return this._colorsArray;
+		return this._colorObject;
 	}
 
 
@@ -57,7 +58,7 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 		MjtWebGlCube.getInstance().paint(context, this.getModelViewMatrixFloat32());
 	};
 
-	MjtWebGlBlock.prototype.updateColorsArray = function updateColorsArray(context)
+	MjtWebGlBlock.prototype.updateColorObject = function updateColorObject(context)
 	{
 		var oneDimensionalColorArray = MjtWebGlCube.getInstance().joinArrays4(this.frontColor, this.rightColor, this.topColor, this.leftColor, this.bottomColor, this.backColor);
 
@@ -71,8 +72,8 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 	
 	MjtWebGlBlock.prototype.setupColorBuffer = function setupColorBuffer( context )
 	{
-		this.getColorsArray(context);
-		MjtWebGlToolkit.getInstance().updateVertexShaderAttribute("vColor", this._colorObject, context.FLOAT, 4);
+		var colorObject = this.getColorObject(context);
+		MjtWebGlToolkit.getInstance().updateVertexShaderAttribute("vColor", colorObject, context.FLOAT, 4);
 	};
 
 	
