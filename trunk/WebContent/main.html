@@ -26,7 +26,7 @@
     {
 		gl_Position =  u_projMatrix * u_modelViewMatrix * vPosition;
 		//gl_Position =  u_projMatrix * u_cameraTranslationMatrix * u_modelViewMatrix * vPosition;
-        v_Color = vColor + vPosition;
+        v_Color = vColor;
         vec4 transNormal = u_normalMatrix * vec4(vNormal, 1);
 		//mat4 test = transpose(u_cameraTranslationMatrix);
         v_Dot = max(dot(transNormal.xyz, lightDir), 0.0);
@@ -69,7 +69,7 @@ canvas { /* border: 2px solid black; */
 </head>
 
 <body>
-	<canvas id="mainCanvas">
+	<canvas id="mjtCanvas">
     If you're seeing this your web browser doesn't support the &lt;canvas>&gt; element. Ouch!
 </canvas>
 	<div class="text">Canvas World 0.1 (alpha)</div>

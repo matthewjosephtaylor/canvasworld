@@ -1,16 +1,41 @@
+mjt.register("J3DIVector3", "J3DIMath.js");
+mjt.register("J3DIMatrix4", "J3DIMath.js");
+mjt.register("initWebGL", "J3DI.js");
+mjt.register("window.requestAnimFrame", "webgl-utils.js");
 
-
-function MjtWebGlToolkit()
+mjt.require("initWebGL", "J3DIVector3", "J3DIMatrix4", "window.requestAnimFrame", "MjtUserInput", "MjtWebGlCamera", function defineMjtWebGlToolkitCallback()
 {
-	this.VERTEX_ATTRIBUTES = [ "vNormal", "vColor", "vPosition" ];
 
-	this.width = -1;
-	this.height = -1;
-	this.gl = null;
+	MjtWebGlToolkit = function MjtWebGlToolkit()
+	{
+		this.canvasId = "mjtCanvas";
+		this.VERTEX_ATTRIBUTES = [ "vNormal", "vColor", "vPosition" ];
 
-	this.mjtWebGlCamera = new MjtWebGlCamera();
-	
-	this.log = function log(message)
+		this.width = -1;
+		this.height = -1;
+		this.gl = null;
+
+		this.mjtWebGlCamera = new MjtWebGlCamera();
+
+		this.protoCube = null;
+
+		this.perspectiveMatrix = new J3DIMatrix4();
+
+		this.currentAngle = 0;
+		this.incAngle = 1;
+
+		this.geometricObjects = [];
+
+		this.normalMatrix = new J3DIMatrix4();
+		this.modelViewMatrix = new J3DIMatrix4();
+		this.cameraTranslationMatrix = new J3DIMatrix4();
+
+		this.init();
+		this.start();
+
+	};
+
+	MjtWebGlToolkit.prototype.log = function log(message)
 	{
 		if (console && console.log)
 		{
@@ -22,19 +47,17 @@ function MjtWebGlToolkit()
 		}
 	};
 
-	this.addVertexShaderAttribute = function addVertexShaderAttribute(attributeName, bufferObject, componentPrimitiveType, vertexDimensions)
+	MjtWebGlToolkit.prototype.addVertexShaderAttribute = function addVertexShaderAttribute(attributeName, bufferObject, componentPrimitiveType, vertexDimensions)
 	{
 		var attributeIdx = this.gl.getAttribLocation(this.gl.program, attributeName);
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, bufferObject);
 		this.gl.vertexAttribPointer(attributeIdx, vertexDimensions, componentPrimitiveType, false, 0, 0);
-		// this.gl.enableVertexAttribArray(attributeIdx);
+		this.gl.enableVertexAttribArray(attributeIdx);
 	};
 
-	this.protoCube = null;
-
-	this.init = function init()
+	MjtWebGlToolkit.prototype.init = function init()
 	{
-		this.log("Starting init...");
+		this.log("Starting init with canvas: " + this.canvasId);
 		// Initialize
 		this.gl = initWebGL(
 		// The id of the Canvas Element
@@ -52,40 +75,23 @@ function MjtWebGlToolkit()
 			throw "Unable to initialize WebGL";
 		}
 
-		this.protoCube = makeBox(this.gl);
-
 		// Set up light direction uniform
 		this.gl.uniform3f(this.gl.getUniformLocation(this.gl.program, "lightDir"), 0, 0, 1);
 
 		this.u_modelViewMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_modelViewMatrix");
 		this.u_projMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_projMatrix");
 		this.u_normalMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_normalMatrix");
-		// this.u_cameraTranslationMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_cameraTranslationMatrix");
 
-		this.gl.enableVertexAttribArray(0);
-		this.gl.enableVertexAttribArray(1);
-		this.gl.enableVertexAttribArray(2);
-		this.addVertexShaderAttribute("vNormal", this.protoCube.normalObject, this.gl.FLOAT, 3);
-		this.addVertexShaderAttribute("vPosition", this.protoCube.vertexObject, this.gl.FLOAT, 3);
-		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mjtWebGlToolkit.protoCube.indexObject);
+		this.framerate = new Framerate("framerate");
 
 		this.log("Finished init.");
 	};
 
-	this._perspectiveMatrix = null;
 
-	this.updatePerspective = function updatePerspective()
-	{
-		this._perspectiveMatrix = null;
-	};
-
-
-	this.perspectiveMatrix = new J3DIMatrix4();
-
-	this.reshape = function reshape()
+	MjtWebGlToolkit.prototype.reshape = function reshape()
 	{
 		var canvas = document.getElementById(this.canvasId);
-		var windowWidth = window.innerWidth-16;
+		var windowWidth = window.innerWidth - 16;
 		var windowHeight = window.innerHeight - 80;
 
 		this.width = windowWidth;
@@ -106,27 +112,7 @@ function MjtWebGlToolkit()
 		return perspectiveMatrix;
 	};
 
-	this.currentAngle = 0;
-	this.incAngle = 1;
-
-	this.geometricObjects = [];
-
-	this.modelViewMatrixOldValues = {};
-
-	this.isOldValueDifferent = function testOldValue(valueName, value)
-	{
-		var oldValue = this.modelViewMatrixOldValues[valueName];
-		var result = oldValue != value;
-		this.modelViewMatrixOldValues[valueName] = value;
-		return result;
-	};
-
-
-	this.normalMatrix = new J3DIMatrix4();
-	this.modelViewMatrix = new J3DIMatrix4();
-	this.cameraTranslationMatrix = new J3DIMatrix4();
-
-	this.drawPicture = function drawPicture()
+	MjtWebGlToolkit.prototype.drawPicture = function drawPicture()
 	{
 		// Clear the canvas
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -151,7 +137,7 @@ function MjtWebGlToolkit()
 		normalMatrix.load(this.cameraTranslationMatrix);
 		normalMatrix.invert();
 		normalMatrix.transpose();
-		normalMatrix.setUniform(this.gl, mjtWebGlToolkit.u_normalMatrixLoc, false);
+		normalMatrix.setUniform(this.gl, this.u_normalMatrixLoc, false);
 
 		for ( var i in this.geometricObjects)
 		{
@@ -172,24 +158,14 @@ function MjtWebGlToolkit()
 		}
 	};
 
-	this.scene = new MjtWebGlScene(this);
-	this.canvasId = null;
-	this.start = function start(canvasId)
+	MjtWebGlToolkit.prototype.start = function start()
 	{
-		this.canvasId = canvasId;
-		var c = document.getElementById(canvasId);
+		var c = document.getElementById(this.canvasId);
 		var w = Math.floor(window.innerWidth * 0.9);
 		var h = Math.floor(window.innerHeight * 0.9);
 
 		c.width = w;
 		c.height = h;
-
-		this.init();
-		this.framerate = new Framerate("framerate");
-
-		//add sceen
-		this.scene.load();
-		
 
 		tk = this;
 		tk.lastTime = new Date().getTime();
@@ -199,10 +175,11 @@ function MjtWebGlToolkit()
 			tk.mjtWebGlCamera.move(currentTime - tk.lastTime);
 			tk.drawPicture();
 			tk.lastTime = currentTime;
-			setTimeout(f, 1000/58);
-			//window.requestAnimFrame(f, c);
+			setTimeout(f, 1000 / 30);
+			// window.requestAnimFrame(f, c);
 		})();
-		
+
 	};
 
-}
+	mjt.singletonify(MjtWebGlToolkit);
+});

@@ -1,14 +1,8 @@
-mjt.register("J3DIVector3", "J3DIMath.js");
-mjt.register("J3DIMatrix4", "J3DIMath.js");
-mjt.register("initWebGL", "J3DI.js");
-mjt.register("window.requestAnimFrame", "webgl-utils.js");
-
-
 // mjt.require("MjtStorageWebSql", main);
 // mjt.require("MjtConditional");
 
-//mjt.require("initWebGL", "J3DIVector3", "J3DIMatrix4", "window.requestAnimFrame", "MjtUserInput", "MjtWebGlCube", "MjtWebGlToolkit", "MjtWebGlCamera", "MjtWebGlScene", function()
-mjt.require("MjtStorageLocal", function()
+mjt.require("MjtWebGlScene", function mainCallback()
+//mjt.require("MjtStorageLocal", function()
 //mjt.require("MjtFunction", function()
 {
 
@@ -22,8 +16,10 @@ mjt.require("MjtStorageLocal", function()
 	
 //	console.log("after call");
 	
-//	mjtWebGlToolkit = new MjtWebGlToolkit();
-//	mjtWebGlToolkit.start('mainCanvas');
+	//mjtWebGlToolkit = new MjtWebGlToolkit();
+	//MjtWebGlToolkit.getInstance().start('mainCanvas');
+	mjtWebGlScene = new MjtWebGlScene();
+	mjtWebGlScene.load();
 //	
 //	console.log("got result: 1");
 //	var worker = new Worker('js/MjtSandboxWorker.js');
@@ -42,7 +38,7 @@ mjt.require("MjtStorageLocal", function()
 
 	//var foo = {x: "hello world"};
 	//var store = new MjtStorageLocal();
-	var store = MjtStorageLocal.getInstance();
+	//var store = MjtStorageLocal.getInstance();
 	
 	//store.set(bar);
 	
@@ -55,12 +51,12 @@ mjt.require("MjtStorageLocal", function()
 //	store.set(bar);
 	
 	//var foo =  [0,"test123",6];
-	var foo = new Fraction(3,5);
+	//var foo = new Fraction("1/5");
 	//console.log(foo);
 	//var store = MjtStorageLocal.getInstance();
-	store.set(foo);
+	//store.set(foo);
 
-//	store.get([Fraction.prototype.constructor.name,[["2","Number",6]]], function(result){
+//	store.get([Fraction.prototype.constructor.name,[["numerator","Number",2]]], function(result){
 //	console.log("Got result: ");
 //	console.log(JSON.stringify(result));
 //	});

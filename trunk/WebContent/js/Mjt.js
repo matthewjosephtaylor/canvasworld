@@ -26,7 +26,7 @@ Mjt.prototype.loadJavascript = function loadJavascript(fileName)
 	var headElement = document.getElementsByTagName('head').item(0);
 	var scriptElement = document.createElement('script');
 	scriptElement.setAttribute("type", "text/javascript");
-	console.log("loading: " + this.javascriptPath + "/" + fileName);
+	console.log("loadingJavascript: " + this.javascriptPath + "/" + fileName);
 	scriptElement.setAttribute("src", this.javascriptPath + "/" + fileName);
 	headElement.appendChild(scriptElement);
 	console.log("loaded: " + this.javascriptPath + "/" + fileName);
@@ -63,7 +63,7 @@ Mjt.prototype.loadOnce = function loadOnce(typeName)
 	var fileNameOfType = this.getFileNameOfTypeName(typeName);
 	if (!this.loaded[fileNameOfType])
 	{
-		console.log('loading: ' + name);
+		console.log('loading: ' + fileNameOfType);
 		this.loaded[fileNameOfType] = true;
 		this.loadJavascript(fileNameOfType);
 	}
@@ -79,7 +79,11 @@ Mjt.prototype.callOnceAllTypesExist = function callOnceAllTypesExist(callbackFun
 		var evalResult = eval("typeof " + type);
 		if (evalResult == "undefined")
 		{
-			console.log("type doesn't exist yet: " + type);
+			console.log("type doesn't exist yet: " + type +" waiting to call: " + callbackFunction.name);
+			if(callbackFunction.name == "")
+			{
+				console.log(callbackFunction);
+			}	
 			callCallback = false;
 			break;
 		}

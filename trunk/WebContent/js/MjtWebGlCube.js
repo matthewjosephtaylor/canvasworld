@@ -1,16 +1,16 @@
-
-
-function MjtWebGlCube(context, positionArray, scale, rotationArray)
+mjt.require("MjtWebGlToolkit", function defineMjtWebGlCubeCallback()
 {
-	this.context = context;
-	this.positionArray = positionArray;
-	this.rotationArray = rotationArray;
-	this.scale = scale;
-	
-	this.init = function init()
+
+	MjtWebGlCube = function MjtWebGlCube()
 	{
+		this.init(MjtWebGlToolkit.getInstance().gl);
+	};
+
+	MjtWebGlCube.prototype.init = function init(context)
+	{
+		this.protoCube = makeBox(context);
 		// Set up the array of colors for the cube's faces
-		this.colors = new Uint8Array([ 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, // v0-v1-v2-v3 front
+		var colors = new Uint8Array([ 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, // v0-v1-v2-v3 front
 		1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, // v0-v3-v4-v5 right
 		0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, // v0-v5-v6-v1 top
 		1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, // v1-v6-v7-v2 left
@@ -19,40 +19,23 @@ function MjtWebGlCube(context, positionArray, scale, rotationArray)
 		);
 
 		// Set up the vertex buffer for the colors
-		this.colorObject = context.createBuffer();
+		var colorObject = context.createBuffer();
 
-		this.context.bindBuffer(context.ARRAY_BUFFER, this.colorObject);
-		this.context.bufferData(context.ARRAY_BUFFER, this.colors, context.STATIC_DRAW);
-		
-		mjtWebGlToolkit.addVertexShaderAttribute("vColor", this.colorObject, context.UNSIGNED_BYTE, 4);
+		context.bindBuffer(context.ARRAY_BUFFER, colorObject);
+		context.bufferData(context.ARRAY_BUFFER, colors, context.STATIC_DRAW);
 
-		//mjtWebGlToolkit.addVertexShaderAttribute("vPosition", mjtWebGlToolkit.protoCube.vertexObject, this.context.FLOAT, 3);
-		
-		// Bind the index array
-		//this.context.bindBuffer(this.context.ELEMENT_ARRAY_BUFFER, mjtWebGlToolkit.protoCube.indexObject);
-
-		this.modelViewMatrix = new J3DIMatrix4();
-		this.modelViewMatrix.translate(this.positionArray);
-		this.modelViewMatrixFloat32 = this.modelViewMatrix.getAsFloat32Array();
-//		this.modelViewMatrix.scale(this.scale);
-//		this.modelViewMatrix.rotate(this.rotationArray[0],1,0,0);
-//		this.modelViewMatrix.rotate(this.rotationArray[1],0,1,0);
-//		this.modelViewMatrix.rotate(this.rotationArray[2],0,0,1);
-		//modelViewMatrix.setUniform(this.context, mjtWebGlToolkit.u_modelViewMatrixLoc, false);
-		
-		//this.worker = new Worker('js/MjtSandboxWorker.js');
-
+		MjtWebGlToolkit.getInstance().addVertexShaderAttribute("vColor", colorObject, context.UNSIGNED_BYTE, 4);
+		MjtWebGlToolkit.getInstance().addVertexShaderAttribute("vNormal", this.protoCube.normalObject, context.FLOAT, 3);
+		MjtWebGlToolkit.getInstance().addVertexShaderAttribute("vPosition", this.protoCube.vertexObject, context.FLOAT, 3);
+		context.bindBuffer(context.ELEMENT_ARRAY_BUFFER, this.protoCube.indexObject);
 	};
-	
-	
-	this.paint = function paint(context)
+
+	MjtWebGlCube.prototype.paint = function paint(context)
 	{
-		//this.worker.postMessage({context: context, mjtWebGlToolkit: mjtWebGlToolkit, modelViewMatrixFloat32 : this.modelViewMatrixFloat32, console : this.console});
-
-		context.uniformMatrix4fv(mjtWebGlToolkit.u_modelViewMatrixLoc, false, this.modelViewMatrixFloat32);
-		context.drawElements(context.TRIANGLES, mjtWebGlToolkit.protoCube.numIndices, context.UNSIGNED_BYTE, 0);
+		context.uniformMatrix4fv(MjtWebGlToolkit.getInstance().u_modelViewMatrixLoc, false, this.modelViewMatrixFloat32);
+		context.drawElements(context.TRIANGLES, this.protoCube.numIndices, context.UNSIGNED_BYTE, 0);
 	};
 
-	
-	this.init();
-}
+	mjt.singletonify(MjtWebGlCube);
+
+});
