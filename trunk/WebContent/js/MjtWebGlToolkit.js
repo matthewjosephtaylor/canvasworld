@@ -30,7 +30,8 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		this.cameraTranslationMatrix = new J3DIMatrix4();
 
 		
-		this._vertexIdxCache = {};
+		this._vertexAttributeIdxCache = {};
+		this._uniformLocationCache = {};
 		this.init();
 		this.start();
 
@@ -48,21 +49,44 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		}
 	};
 
-	
-	
-	MjtWebGlToolkit.prototype.addVertexShaderAttribute = function addVertexShaderAttribute(attributeName, bufferObject, componentPrimitiveType, vertexDimensions)
+	MjtWebGlToolkit.prototype.getUniformLocation = function getUniformLocation(uniformName)
 	{
-		var attributeIdx = this._vertexIdxCache[attributeName];
+		var uniformLocation = this._uniformLocationCache[uniformName];
+		if(!uniformLocation)
+		{
+			uniformLocation = this.gl.getUniformLocation(this.gl.program, uniformName);
+			this._uniformLocationCache[uniformName] = uniformLocation;
+		}
+		return uniformLocation;
+	};
+
+	
+	MjtWebGlToolkit.prototype.getVertexShaderAttributeIdx = function getVertexShaderAttributeIdx(attributeName)
+	{
+		var attributeIdx = this._vertexAttributeIdxCache[attributeName];
 		if(!attributeIdx)
 		{
 			attributeIdx = this.gl.getAttribLocation(this.gl.program, attributeName);
-			this._vertexIdxCache[attributeName] = attributeIdx;
+			this._vertexAttributeIdxCache[attributeName] = attributeIdx;
 			this.gl.enableVertexAttribArray(attributeIdx);
-		}	
+		}
+		return attributeIdx;
+	};
+	
+	MjtWebGlToolkit.prototype.updateVertexShaderAttribute = function addVertexShaderAttribute(attributeName, bufferObject, componentPrimitiveType, vertexDimensions)
+	{
+		var attributeIdx = this.getVertexShaderAttributeIdx(attributeName);
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, bufferObject);
 		this.gl.vertexAttribPointer(attributeIdx, vertexDimensions, componentPrimitiveType, false, 0, 0);
 	};
 
+	MjtWebGlToolkit.prototype.updateShaderUniform = function updateShaderUniform(uniformName, uniformMatrix)
+	{
+		var matrixLocation = this.getUniformLocation(uniformName);
+		uniformMatrix.setUniform(this.gl, matrixLocation, false);
+	};
+	
+	
 	MjtWebGlToolkit.prototype.init = function init()
 	{
 		this.log("Starting init with canvas: " + this.canvasId);
@@ -86,9 +110,9 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		// Set up light direction uniform
 		this.gl.uniform3f(this.gl.getUniformLocation(this.gl.program, "lightDir"), 0, 0, 1);
 
-		this.u_modelViewMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_modelViewMatrix");
-		this.u_projMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_projMatrix");
-		this.u_normalMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_normalMatrix");
+//		this.u_modelViewMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_modelViewMatrix");
+//		this.u_projMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_projMatrix");
+//		this.u_normalMatrixLoc = this.gl.getUniformLocation(this.gl.program, "u_normalMatrix");
 
 		this.framerate = new Framerate("framerate");
 
@@ -126,27 +150,22 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
 		var mjtWebGlCamera = MjtWebGlCamera.getInstance();
-		// var cameraTranslationMatrix = new J3DIMatrix4();
 		this.cameraTranslationMatrix.makeIdentity();
 		this.cameraTranslationMatrix.rotate(-mjtWebGlCamera.pitch, 1, 0, 0);
 		this.cameraTranslationMatrix.rotate(-mjtWebGlCamera.yaw, 0, 1, 0);
 		this.cameraTranslationMatrix.translate(-mjtWebGlCamera.posx, -mjtWebGlCamera.posy, -mjtWebGlCamera.posz);
-		// this.cameraTranslationMatrix.setUniform(this.gl, this.u_cameraTranslationMatrixLoc, false);
 
 		// Make sure the canvas is sized correctly.
 		var perspectiveMatrix = this.reshape(this.gl);
 		perspectiveMatrix.multiply(this.cameraTranslationMatrix);
-		perspectiveMatrix.setUniform(this.gl, this.u_projMatrixLoc, false);
-
-		// var modelViewMatrix = this.modelViewMatrix;
-		//
-		// var mvMatrix = new J3DIMatrix4();
+		
+		this.updateShaderUniform("u_projMatrix", perspectiveMatrix);
 
 		var normalMatrix = this.normalMatrix;
 		normalMatrix.load(this.cameraTranslationMatrix);
 		normalMatrix.invert();
 		normalMatrix.transpose();
-		normalMatrix.setUniform(this.gl, this.u_normalMatrixLoc, false);
+		this.updateShaderUniform("normalMatrix", normalMatrix);
 
 		for ( var i in this.geometricObjects)
 		{
@@ -157,14 +176,13 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		this.gl.flush();
 
 		// Show the framerate
-		// console.log("drawing Picture:")
 		this.framerate.snapshot();
 
-		this.currentAngle += this.incAngle;
-		if (this.currentAngle > 360)
-		{
-			this.currentAngle -= 360;
-		}
+//		this.currentAngle += this.incAngle;
+//		if (this.currentAngle > 360)
+//		{
+//			this.currentAngle -= 360;
+//		}
 	};
 
 	MjtWebGlToolkit.prototype.start = function start()
