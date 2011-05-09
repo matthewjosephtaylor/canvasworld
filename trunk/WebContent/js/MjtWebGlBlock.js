@@ -16,6 +16,16 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 
 	};
 
+	MjtWebGlBlock.prototype.setSolidColor = function setSolidColor(colorArray)
+	{
+		this.frontColor = colorArray;
+		this.rightColor = colorArray;
+		this.topColor = colorArray;
+		this.leftColor = colorArray;
+		this.bottomColor = colorArray;
+		this.backColor = colorArray;
+	};
+
 	MjtWebGlBlock.prototype.updateModelViewMatrix = function updateModelViewMatrix()
 	{
 		var modelViewMatrix = new J3DIMatrix4();
@@ -32,25 +42,24 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 		}
 		this._modelViewMatrixFloat32 = modelViewMatrix.getAsFloat32Array();
 	};
-	
+
 	MjtWebGlBlock.prototype.getModelViewMatrixFloat32 = function getModelViewMatrixFloat32()
 	{
-		if(!this._modelViewMatrixFloat32)
+		if (!this._modelViewMatrixFloat32)
 		{
 			this.updateModelViewMatrix();
 		}
 		return this._modelViewMatrixFloat32;
 	};
-	
+
 	MjtWebGlBlock.prototype.getColorObject = function getColorObject(context)
 	{
-		if(!this._colorObject)
+		if (!this._colorObject)
 		{
 			this.updateColorObject(context);
 		}
 		return this._colorObject;
 	};
-
 
 	MjtWebGlBlock.prototype.paint = function paint(context)
 	{
@@ -69,35 +78,36 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 		context.bufferData(context.ARRAY_BUFFER, this._colorsArray, context.STATIC_DRAW);
 
 	};
-	
-	MjtWebGlBlock.prototype.setupTexture = function setupTexture( context )
+
+	MjtWebGlBlock.prototype.setupTexture = function setupTexture(context)
 	{
-		if(this.textureImageURL && !this.texture)
+		
+		if (this.textureImageURL && !this.texture)
 		{
 			this._texture = MjtWebGlToolkit.getInstance().getTexture(this.textureImageURL);
-			//context.bindBuffer(context.ARRAY_BUFFER, MjtWebGlCube.getInstance().protoCube.texCoordObject.texCoordObject);
 		}
-		
+
 		var matrixLocation = MjtWebGlToolkit.getInstance().getUniformLocation("u_useTexture");
 
-		
-		if(this._texture)
+		if (this._texture)
 		{
 			context.bindTexture(context.TEXTURE_2D, this._texture);
 			context.uniform1i(matrixLocation, 1);
 		}
 		else
 		{
-			context.bindTexture(context.TEXTURE_2D, null);
+			//context.bindTexture(context.TEXTURE_2D, null);
 			context.uniform1i(matrixLocation, 0);
-		}	
-	};
-	
-	MjtWebGlBlock.prototype.setupColorBuffer = function setupColorBuffer( context )
-	{
-		var colorObject = this.getColorObject(context);
-		MjtWebGlToolkit.getInstance().updateVertexShaderAttribute("vColor", colorObject, context.FLOAT, 4);
+		}
 	};
 
-	
+	MjtWebGlBlock.prototype.setupColorBuffer = function setupColorBuffer(context)
+	{
+		if (this.textureImageURL == null)
+		{
+			var colorObject = this.getColorObject(context);
+			MjtWebGlToolkit.getInstance().updateVertexShaderAttribute("vColor", colorObject, context.FLOAT, 4);
+		}
+	};
+
 });

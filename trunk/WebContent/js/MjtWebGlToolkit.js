@@ -51,7 +51,7 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 	MjtWebGlToolkit.prototype.getUniformLocation = function getUniformLocation(uniformName)
 	{
 		var uniformLocation = this._uniformLocationCache[uniformName];
-		if (!uniformLocation)
+		if (typeof uniformLocation == 'undefined')
 		{
 			uniformLocation = this.gl.getUniformLocation(this.gl.program, uniformName);
 			this._uniformLocationCache[uniformName] = uniformLocation;
@@ -62,7 +62,7 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 	MjtWebGlToolkit.prototype.getVertexShaderAttributeIdx = function getVertexShaderAttributeIdx(attributeName)
 	{
 		var attributeIdx = this._vertexAttributeIdxCache[attributeName];
-		if (!attributeIdx)
+		if (typeof attributeIdx == 'undefined')
 		{
 			attributeIdx = this.gl.getAttribLocation(this.gl.program, attributeName);
 			this._vertexAttributeIdxCache[attributeName] = attributeIdx;
@@ -196,8 +196,8 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 			MjtActor.getInstance().act(elapsedTime);
 			tk.drawPicture();
 			tk.lastTime = currentTime;
-			setTimeout(f, 1000 / 30);
-			// window.requestAnimFrame(f, c);
+			//setTimeout(f, 1000 / 30);
+			 window.requestAnimFrame(f, c);
 		})();
 
 	};

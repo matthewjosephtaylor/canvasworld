@@ -20,6 +20,7 @@ mjt.require("MjtUserInput",  function defineMjtActorCallback()
 		this.load();
 		this.clear();
 		this.save();
+		this.createTerrain();
 	};
 	
 	MjtActor.prototype.addBlock1 = function addBlock()
@@ -91,5 +92,15 @@ mjt.require("MjtUserInput",  function defineMjtActorCallback()
 		}	
 	};
 
+	MjtActor.prototype.createTerrain = function createTerrain()
+	{
+		var keyPress = MjtUserInput.getInstance().grabKeyPress(52);
+		if(keyPress)
+		{
+			MjtWebGlScene.getInstance().createTerrain();
+		}	
+	};
+
+	
 	mjt.singletonify(MjtActor);
 });

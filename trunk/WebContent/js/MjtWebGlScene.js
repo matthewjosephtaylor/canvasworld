@@ -1,4 +1,4 @@
-mjt.require("MjtWebGlBlock","MjtStorageLocal", function defineMjtWebGlSceneCallback()
+mjt.require("MjtWebGlBlock", "MjtStorageLocal", function defineMjtWebGlSceneCallback()
 {
 
 	MjtWebGlScene = function MjtWebGlScene()
@@ -13,13 +13,12 @@ mjt.require("MjtWebGlBlock","MjtStorageLocal", function defineMjtWebGlSceneCallb
 	MjtWebGlScene.prototype.createHorizon = function createHorizon()
 	{
 		var h = 1000;
-		var block = new MjtWebGlBlock([-h/2,-10,-h/2],null,[h,0.1,h]);
-		block.topColor=[255/255,223/255,128/255,1];
+		var block = new MjtWebGlBlock([ -h / 2, -10, -h / 2 ], null, [ h, 0.1, h ]);
+		block.topColor = [ 255 / 255, 223 / 255, 128 / 255, 1 ];
 		block.textureImageURL = "img/test_texture.jpg";
 		MjtWebGlToolkit.getInstance().geometricObjects.push(block);
 	};
 
-	
 	MjtWebGlScene.prototype.createNew = function createNew()
 	{
 		this.x = 10;
@@ -36,19 +35,18 @@ mjt.require("MjtWebGlBlock","MjtStorageLocal", function defineMjtWebGlSceneCallb
 		MjtWebGlToolkit.getInstance().geometricObjects = [];
 	};
 
-	
 	MjtWebGlScene.prototype.save = function save()
 	{
 		var store = MjtStorageLocal.getInstance();
 		store.clear();
-		//console.log("persisting: " + MjtWebGlToolkit.getInstance().geometricObjects)
+		// console.log("persisting: " + MjtWebGlToolkit.getInstance().geometricObjects)
 		for ( var i in MjtWebGlToolkit.getInstance().geometricObjects)
 		{
 			var geometricObject = MjtWebGlToolkit.getInstance().geometricObjects[i];
 			store.set(geometricObject);
 		}
 	};
-	
+
 	MjtWebGlScene.prototype.load = function load()
 	{
 		this.createHorizon();
@@ -58,21 +56,20 @@ mjt.require("MjtWebGlBlock","MjtStorageLocal", function defineMjtWebGlSceneCallb
 		{
 			MjtWebGlToolkit.getInstance().geometricObjects.push(result);
 			document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
-//			console.log("Got result: ");
-//			console.log(JSON.stringify(result));
-//			console.log(result);
-//			resultArray.push(result);
+			// console.log("Got result: ");
+			// console.log(JSON.stringify(result));
+			// console.log(result);
+			// resultArray.push(result);
 			lastResult = result;
 		}, function(matchCount)
 		{
 			console.log("matchCount: " + matchCount)
 			console.log(lastResult);
-//			console.log("resultArray.length: " + resultArray.length)
-//			console.log(resultArray);
+			// console.log("resultArray.length: " + resultArray.length)
+			// console.log(resultArray);
 		});
 
 	};
-	
 
 	MjtWebGlScene.prototype.addNextCubeset = function addNextCubeset()
 	{
@@ -118,13 +115,56 @@ mjt.require("MjtWebGlBlock","MjtStorageLocal", function defineMjtWebGlSceneCallb
 					};
 				};
 				f(this.i, this.j, this.x)();
-				
-				//setTimeout(f(this.i, this.j, this.x), Math.random() * 10000);
+
+				// setTimeout(f(this.i, this.j, this.x), Math.random() * 10000);
 			}
 		}
 
 	};
 
+	MjtWebGlScene.prototype.createTerrain = function createTerrain()
+	{
+		var y = 1;
+		var b = [];
+		for ( var i = 0; i < 200; i += 2)
+		{
+			var d = 1;
+			for ( var j = 0; j < 200; j += 2)
+			{
+				var c = b[j];
+				if (!c)
+				{
+					c = 1;
+				}
+				var x = i;
+				var z = j;
+				var w = c + d;
+				y = (Math.random() * w) - w + 1;
+				b[j] = y;
+				d = y;
+
+				var f = function(x,y,z)
+				{
+					return function()
+					{
+						var block = new MjtWebGlBlock([ x, y, z ], null, [1,y,1]);
+						MjtWebGlToolkit.getInstance().geometricObjects.push(block);
+						if(y<0)
+						{
+							block.textureImageURL = "img/block_texture.png";
+						}
+						else
+						{
+							block.setSolidColor([0.5/(y+1),1/(y+1),0.2/(y+1),1]);
+						}	
+						document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
+					};
+				};
+				setTimeout(f(x,y,z), (i+j) *100);
+			}
+		}
+	}
+
 	mjt.singletonify(MjtWebGlScene);
-	
+
 });
