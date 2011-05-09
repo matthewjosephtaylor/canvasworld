@@ -15,13 +15,35 @@ mjt.require("MjtUserInput",  function defineMjtActorCallback()
 	
 	MjtActor.prototype.act = function act(elapsedTime)
 	{
-		this.addBlock();
+		this.addBlock1();
+		this.addBlock2();
 		this.load();
 		this.clear();
 		this.save();
 	};
 	
-	MjtActor.prototype.addBlock = function addBlock()
+	MjtActor.prototype.addBlock1 = function addBlock()
+	{
+		var spaceKeyPressTime = MjtUserInput.getInstance().grabKeyPress(70);
+		if(spaceKeyPressTime)
+		{
+			var camera = MjtWebGlCamera.getInstance();
+//			console.log("got keypress");
+//			console.log("Current Camera Coords: " + camera);
+			var x = camera.posx + Math.cos(this.degToRad(-camera.yaw));
+			var z = camera.posz + Math.sin(this.degToRad(-camera.yaw));
+			var y = camera.posy;
+			var block = new MjtWebGlBlock([ x,y,z ], [0,camera.yaw,0]);
+			block.frontColor = [0.1,0.5,0.5,1];
+			//block.textureImageURL="img/block_texture.png";
+
+//			console.log("block pos: " + JSON.stringify(block.positionArray));
+			MjtWebGlToolkit.getInstance().geometricObjects.push(block);
+			document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
+		}	
+	};
+
+	MjtActor.prototype.addBlock2 = function addBlock()
 	{
 		var spaceKeyPressTime = MjtUserInput.getInstance().grabKeyPress(32);
 		if(spaceKeyPressTime)
@@ -34,7 +56,7 @@ mjt.require("MjtUserInput",  function defineMjtActorCallback()
 			var y = camera.posy;
 			var block = new MjtWebGlBlock([ x,y,z ], [0,camera.yaw,0]);
 			block.frontColor = [0.1,0.5,0.5,1];
-			block.textureImageURL="img/block_texture.png" + "?" + new Date().getTime();
+			block.textureImageURL="img/block_texture.png";
 
 //			console.log("block pos: " + JSON.stringify(block.positionArray));
 			MjtWebGlToolkit.getInstance().geometricObjects.push(block);

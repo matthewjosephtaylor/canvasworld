@@ -30,6 +30,7 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 
 		this._vertexAttributeIdxCache = {};
 		this._uniformLocationCache = {};
+		this._textureCache = {};
 		this.init();
 		this.start();
 
@@ -200,11 +201,22 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 		})();
 
 	};
+	
+	MjtWebGlToolkit.prototype.getTexture = function getTexture(url)
+	{
+		var texture = this._textureCache[url];
+		if(url && !texture)
+		{
+			this.loadImageTexture(url);
+		}
+		return texture;
+	};
 
 	MjtWebGlToolkit.prototype.loadImageTexture = function loadImageTexture(url)
 	{
 		var ctx = this.gl;
 		var texture = ctx.createTexture();
+		this._textureCache[url]=texture;
 		ctx.bindTexture(ctx.TEXTURE_2D, texture);
 		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.LINEAR);
 		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
@@ -216,13 +228,13 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 		{
 			MjtWebGlToolkit.getInstance().doLoadImageTexture(ctx, texture.image, texture);
 		};
-		texture.image.src = url;
+		texture.image.src = url  + "?" + new Date().getTime();
 		return texture;
 	};
 
 	MjtWebGlToolkit.prototype.doLoadImageTexture = function doLoadImageTexture(ctx, image, texture)
 	{
-		console.log("Image loaded.  Binding....");
+		console.log("Image loaded.  Binding...." + image.src);
 		ctx.bindTexture(ctx.TEXTURE_2D, texture);
 		ctx.texImage2D(ctx.TEXTURE_2D, 0, ctx.RGBA, ctx.RGBA, ctx.UNSIGNED_BYTE, image);
 		console.log("Bound.");

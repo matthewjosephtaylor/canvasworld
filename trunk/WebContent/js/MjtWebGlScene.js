@@ -15,6 +15,7 @@ mjt.require("MjtWebGlBlock","MjtStorageLocal", function defineMjtWebGlSceneCallb
 		var h = 1000;
 		var block = new MjtWebGlBlock([-h/2,-10,-h/2],null,[h,0.1,h]);
 		block.topColor=[255/255,223/255,128/255,1];
+		block.textureImageURL = "img/test_texture.jpg";
 		MjtWebGlToolkit.getInstance().geometricObjects.push(block);
 	};
 

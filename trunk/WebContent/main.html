@@ -38,6 +38,8 @@
 #endif
 
 	uniform sampler2D sampler2d;
+	uniform vec3 lightDir;
+	uniform bool u_useTexture;
 
     varying float v_Dot;
     varying vec4 v_Color;
@@ -45,15 +47,21 @@
 
     void main()
     {
+		if(u_useTexture)
+		{
+	        vec2 texCoord = vec2(v_texCoord.s, 1.0 - v_texCoord.t);
+    	    vec4 color = texture2D(sampler2d, texCoord);
+			gl_FragColor = color;
+		}
+		else
+		{
+			gl_FragColor = v_Color;
+		}
+
 		//gl_FragColor = v_Color;
 
 
 
-
-
-        vec2 texCoord = vec2(v_texCoord.s, 1.0 - v_texCoord.t);
-        vec4 color = texture2D(sampler2d, texCoord);
-		gl_FragColor = color;
         //color += vec4(0.5, 0.5, 0.5, 1);
         //gl_FragColor = vec4(color.xyz, color.a);
 		//gl_FragColor = vec4(color.xyz, 1);

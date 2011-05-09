@@ -74,13 +74,22 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 	{
 		if(this.textureImageURL && !this.texture)
 		{
-			this.texture = MjtWebGlToolkit.getInstance().loadImageTexture(this.textureImageURL);
+			this._texture = MjtWebGlToolkit.getInstance().getTexture(this.textureImageURL);
 			//context.bindBuffer(context.ARRAY_BUFFER, MjtWebGlCube.getInstance().protoCube.texCoordObject.texCoordObject);
 		}
 		
-		if(this.texture)
+		var matrixLocation = MjtWebGlToolkit.getInstance().getUniformLocation("u_useTexture");
+
+		
+		if(this._texture)
 		{
-			context.bindTexture(context.TEXTURE_2D, this.texture);
+			context.bindTexture(context.TEXTURE_2D, this._texture);
+			context.uniform1i(matrixLocation, 1);
+		}
+		else
+		{
+			context.bindTexture(context.TEXTURE_2D, null);
+			context.uniform1i(matrixLocation, 0);
 		}	
 	};
 	
