@@ -12,7 +12,7 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 		this.leftColor = [ 1, 1, 0, 1 ];
 		this.bottomColor = [ 1, 0, 1, 1 ];
 		this.backColor = [ 0, 1, 1, 1 ];
-		this.textureImage = null;
+		this.textureImageURL = null;
 
 	};
 
@@ -49,11 +49,12 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 			this.updateColorObject(context);
 		}
 		return this._colorObject;
-	}
+	};
 
 
 	MjtWebGlBlock.prototype.paint = function paint(context)
 	{
+		this.setupTexture(context);
 		this.setupColorBuffer(context);
 		MjtWebGlCube.getInstance().paint(context, this.getModelViewMatrixFloat32());
 	};
@@ -69,6 +70,19 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 
 	};
 	
+	MjtWebGlBlock.prototype.setupTexture = function setupTexture( context )
+	{
+		if(this.textureImageURL && !this.texture)
+		{
+			this.texture = MjtWebGlToolkit.getInstance().loadImageTexture(this.textureImageURL);
+			//context.bindBuffer(context.ARRAY_BUFFER, MjtWebGlCube.getInstance().protoCube.texCoordObject.texCoordObject);
+		}
+		
+		if(this.texture)
+		{
+			context.bindTexture(context.TEXTURE_2D, this.texture);
+		}	
+	};
 	
 	MjtWebGlBlock.prototype.setupColorBuffer = function setupColorBuffer( context )
 	{

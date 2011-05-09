@@ -30,6 +30,7 @@ mjt.require("MjtWebGlToolkit", function defineMjtWebGlCubeCallback()
 
 		MjtWebGlToolkit.getInstance().updateVertexShaderAttribute("vNormal", this.protoCube.normalObject, context.FLOAT, 3);
 		MjtWebGlToolkit.getInstance().updateVertexShaderAttribute("vPosition", this.protoCube.vertexObject, context.FLOAT, 3);
+		MjtWebGlToolkit.getInstance().updateVertexShaderAttribute("vTexCoord", this.protoCube.texCoordObject, context.FLOAT, 2);
 	};
 
 	

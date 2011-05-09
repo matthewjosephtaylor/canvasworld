@@ -34,6 +34,7 @@ mjt.require("MjtUserInput",  function defineMjtActorCallback()
 			var y = camera.posy;
 			var block = new MjtWebGlBlock([ x,y,z ], [0,camera.yaw,0]);
 			block.frontColor = [0.1,0.5,0.5,1];
+			block.textureImageURL="img/block_texture.png" + "?" + new Date().getTime();
 
 //			console.log("block pos: " + JSON.stringify(block.positionArray));
 			MjtWebGlToolkit.getInstance().geometricObjects.push(block);

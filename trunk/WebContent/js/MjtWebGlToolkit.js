@@ -3,18 +3,17 @@ mjt.register("J3DIMatrix4", "J3DIMath.js");
 mjt.register("initWebGL", "J3DI.js");
 mjt.register("window.requestAnimFrame", "webgl-utils.js");
 
-mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.requestAnimFrame", "MjtUserInput", "MjtWebGlCamera", function defineMjtWebGlToolkitCallback()
+mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.requestAnimFrame", "MjtUserInput", "MjtWebGlCamera", function defineMjtWebGlToolkitCallback()
 {
 
 	MjtWebGlToolkit = function MjtWebGlToolkit()
 	{
 		this.canvasId = "mjtCanvas";
-		this.VERTEX_ATTRIBUTES = [ "vNormal", "vColor", "vPosition" ];
+		this.VERTEX_ATTRIBUTES = [ "vNormal", "vColor", "vPosition", "vTexCoord" ];
 
 		this.width = -1;
 		this.height = -1;
 		this.gl = null;
-
 
 		this.protoCube = null;
 
@@ -29,7 +28,6 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		this.modelViewMatrix = new J3DIMatrix4();
 		this.cameraTranslationMatrix = new J3DIMatrix4();
 
-		
 		this._vertexAttributeIdxCache = {};
 		this._uniformLocationCache = {};
 		this.init();
@@ -52,7 +50,7 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 	MjtWebGlToolkit.prototype.getUniformLocation = function getUniformLocation(uniformName)
 	{
 		var uniformLocation = this._uniformLocationCache[uniformName];
-		if(!uniformLocation)
+		if (!uniformLocation)
 		{
 			uniformLocation = this.gl.getUniformLocation(this.gl.program, uniformName);
 			this._uniformLocationCache[uniformName] = uniformLocation;
@@ -60,11 +58,10 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		return uniformLocation;
 	};
 
-	
 	MjtWebGlToolkit.prototype.getVertexShaderAttributeIdx = function getVertexShaderAttributeIdx(attributeName)
 	{
 		var attributeIdx = this._vertexAttributeIdxCache[attributeName];
-		if(!attributeIdx)
+		if (!attributeIdx)
 		{
 			attributeIdx = this.gl.getAttribLocation(this.gl.program, attributeName);
 			this._vertexAttributeIdxCache[attributeName] = attributeIdx;
@@ -72,7 +69,7 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		}
 		return attributeIdx;
 	};
-	
+
 	MjtWebGlToolkit.prototype.updateVertexShaderAttribute = function addVertexShaderAttribute(attributeName, bufferObject, componentPrimitiveType, vertexDimensions)
 	{
 		var attributeIdx = this.getVertexShaderAttributeIdx(attributeName);
@@ -85,8 +82,7 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		var matrixLocation = this.getUniformLocation(uniformName);
 		uniformMatrix.setUniform(this.gl, matrixLocation, false);
 	};
-	
-	
+
 	MjtWebGlToolkit.prototype.init = function init()
 	{
 		this.log("Starting init with canvas: " + this.canvasId);
@@ -114,7 +110,6 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 
 		this.log("Finished init.");
 	};
-
 
 	MjtWebGlToolkit.prototype.reshape = function reshape()
 	{
@@ -154,7 +149,7 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		// Make sure the canvas is sized correctly.
 		var perspectiveMatrix = this.reshape(this.gl);
 		perspectiveMatrix.multiply(this.cameraTranslationMatrix);
-		
+
 		this.updateShaderUniform("u_projMatrix", perspectiveMatrix);
 
 		var normalMatrix = this.normalMatrix;
@@ -174,11 +169,11 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 		// Show the framerate
 		this.framerate.snapshot();
 
-//		this.currentAngle += this.incAngle;
-//		if (this.currentAngle > 360)
-//		{
-//			this.currentAngle -= 360;
-//		}
+		// this.currentAngle += this.incAngle;
+		// if (this.currentAngle > 360)
+		// {
+		// this.currentAngle -= 360;
+		// }
 	};
 
 	MjtWebGlToolkit.prototype.start = function start()
@@ -204,6 +199,33 @@ mjt.require("MjtActor","initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reques
 			// window.requestAnimFrame(f, c);
 		})();
 
+	};
+
+	MjtWebGlToolkit.prototype.loadImageTexture = function loadImageTexture(url)
+	{
+		var ctx = this.gl;
+		var texture = ctx.createTexture();
+		ctx.bindTexture(ctx.TEXTURE_2D, texture);
+		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.LINEAR);
+		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
+		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_S, ctx.CLAMP_TO_EDGE);
+		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_T, ctx.CLAMP_TO_EDGE);
+
+		texture.image = new Image();
+		texture.image.onload = function()
+		{
+			MjtWebGlToolkit.getInstance().doLoadImageTexture(ctx, texture.image, texture);
+		};
+		texture.image.src = url;
+		return texture;
+	};
+
+	MjtWebGlToolkit.prototype.doLoadImageTexture = function doLoadImageTexture(ctx, image, texture)
+	{
+		console.log("Image loaded.  Binding....");
+		ctx.bindTexture(ctx.TEXTURE_2D, texture);
+		ctx.texImage2D(ctx.TEXTURE_2D, 0, ctx.RGBA, ctx.RGBA, ctx.UNSIGNED_BYTE, image);
+		console.log("Bound.");
 	};
 
 	mjt.singletonify(MjtWebGlToolkit);
