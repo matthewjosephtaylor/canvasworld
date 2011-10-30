@@ -13,7 +13,9 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 		this.bottomColor = [ 1, 0, 1, 1 ];
 		this.backColor = [ 0, 1, 1, 1 ];
 		this.textureImageURL = null;
-
+		this._modelViewMatrix = new J3DIMatrix4();
+		this._modelViewMatrixFloat32 = null;
+		// this.updateModelViewMatrix();
 	};
 
 	MjtWebGlBlock.prototype.setSolidColor = function setSolidColor(colorArray)
@@ -28,19 +30,25 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 
 	MjtWebGlBlock.prototype.updateModelViewMatrix = function updateModelViewMatrix()
 	{
-		var modelViewMatrix = new J3DIMatrix4();
-		modelViewMatrix.translate(this.positionArray);
+		this._modelViewMatrix.makeIdentity();
+		// this._modelViewMatrix = new J3DIMatrix4();
+		this._modelViewMatrix.translate(this.positionArray);
 		if (this.scaleArray)
 		{
-			modelViewMatrix.scale(this.scaleArray);
+			this._modelViewMatrix.scale(this.scaleArray);
 		}
 		if (this.rotationArray)
 		{
-			modelViewMatrix.rotate(this.rotationArray[0], 1, 0, 0);
-			modelViewMatrix.rotate(this.rotationArray[1], 0, 1, 0);
-			modelViewMatrix.rotate(this.rotationArray[2], 0, 0, 1);
+			this._modelViewMatrix.rotate(this.rotationArray[0], 1, 0, 0);
+			this._modelViewMatrix.rotate(this.rotationArray[1], 0, 1, 0);
+			this._modelViewMatrix.rotate(this.rotationArray[2], 0, 0, 1);
 		}
-		this._modelViewMatrixFloat32 = modelViewMatrix.getAsFloat32Array();
+		this.updateModelViewMatrixFloat32();
+	};
+
+	MjtWebGlBlock.prototype.updateModelViewMatrixFloat32 = function updateModelViewMatrixFloat32()
+	{
+		this._modelViewMatrixFloat32 = this._modelViewMatrix.getAsFloat32Array();
 	};
 
 	MjtWebGlBlock.prototype.getModelViewMatrixFloat32 = function getModelViewMatrixFloat32()
@@ -61,8 +69,65 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 		return this._colorObject;
 	};
 
-	MjtWebGlBlock.prototype.paint = function paint(context)
+	MjtWebGlCube.getInstance()._modelMutationMatrixCache = {};
+	
+	MjtWebGlBlock.prototype.getModelMutationMatrix = function getModelMutationMatrix(elapsedTime)
 	{
+		var rotationAmount = elapsedTime * 0.01;
+		
+		var modelMutationMatrix = MjtWebGlCube.getInstance()._modelMutationMatrixCache[elapsedTime];
+		if(typeof modelMutationMatrix == 'undefined')
+		{
+			modelMutationMatrix = new J3DIMatrix4();
+			modelMutationMatrix.rotate(rotationAmount, 1, 1, 1);
+			MjtWebGlCube.getInstance()._modelMutationMatrixCache[elapsedTime] = modelMutationMatrix;
+		}	
+		return modelMutationMatrix;
+		
+	};
+	
+	MjtWebGlBlock.prototype.move = function move(elapsedTime)
+	{
+		if (this.textureImageURL)
+		{
+			return;
+		}
+		this.getModelViewMatrixFloat32();
+//		var rotationAmount = elapsedTime * 0.01;
+//		this._modelViewMatrix.rotate(rotationAmount, 1, 1, 1);
+		
+		var modelMutationMatrix = this.getModelMutationMatrix(elapsedTime);
+		this._modelViewMatrix.multiply(modelMutationMatrix);
+		
+		this.updateModelViewMatrixFloat32();
+
+		// if(this.rotationArray)
+		// {
+		// //console.log(this.rotationArray[0]);
+		// this.rotationArray[0] += rotationAmount;
+		// this.rotationArray[1] += rotationAmount;
+		// this.rotationArray[2] += rotationAmount;
+		//			
+		// if(this.rotationArray[0] > 360)
+		// {
+		// this.rotationArray[0] -= 360;
+		// }
+		// if(this.rotationArray[1] > 360)
+		// {
+		// this.rotationArray[1] -= 360;
+		// }
+		// if(this.rotationArray[2] > 360)
+		// {
+		// this.rotationArray[2] -= 360;
+		// }
+		//			
+		// this.updateModelViewMatrix();
+		// }
+	};
+
+	MjtWebGlBlock.prototype.paint = function paint(context, elapsedTime)
+	{
+//		this.move(elapsedTime);
 		this.setupTexture(context);
 		this.setupColorBuffer(context);
 		MjtWebGlCube.getInstance().paint(context, this.getModelViewMatrixFloat32());
@@ -81,7 +146,7 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 
 	MjtWebGlBlock.prototype.setupTexture = function setupTexture(context)
 	{
-		
+
 		if (this.textureImageURL && !this.texture)
 		{
 			this._texture = MjtWebGlToolkit.getInstance().getTexture(this.textureImageURL);
@@ -96,7 +161,7 @@ mjt.require("MjtWebGlCube", function defineMjtWebGlCubeCallback()
 		}
 		else
 		{
-			//context.bindTexture(context.TEXTURE_2D, null);
+			// context.bindTexture(context.TEXTURE_2D, null);
 			context.uniform1i(matrixLocation, 0);
 		}
 	};

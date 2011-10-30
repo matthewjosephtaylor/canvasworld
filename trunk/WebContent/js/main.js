@@ -1,13 +1,14 @@
 //mjt.require("MjtWebGlScene", function mainCallback()
-mjt.require("MjtWebGlToolkit", function mainCallback()
+mjt.require("MjtWebGlScene", "MjtWebGlToolkit", function mainCallback()
 // mjt.require("MjtFunction", function()
 {
 
 	console.log("start main...");
 	MjtWebGlToolkit.getInstance();
-//	 mjtWebGlScene = new MjtWebGlScene();
-//	 mjtWebGlScene.createNew();
-//	 mjtWebGlScene.persist();
+//	mjtWebGlScene = new MjtWebGlScene();
+	mjtWebGlScene = MjtWebGlScene.getInstance();
+	mjtWebGlScene.createNew();
+//	mjtWebGlScene.persist();
 	 
 //	mjtWebGlScene.load();
 

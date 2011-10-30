@@ -32,8 +32,24 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 		this._uniformLocationCache = {};
 		this._textureCache = {};
 		this.init();
+		this.displayEnvironmentInformation();
 		this.start();
 
+	};
+	MjtWebGlToolkit.prototype.displayEnvironmentInformation = function displayEnvironmentInformation(message)
+	{
+		this.log("---Begin WebGL Evnironment Information---");
+		var context = this.gl;
+		var log = this.log;
+		(function()
+		{
+			for ( var i in arguments)
+			{
+				var arg = arguments[i];
+				log(arg + ": " + JSON.stringify(context.getParameter(context[arg])));
+			}
+		})("MAX_VIEWPORT_DIMS","MAX_VERTEX_ATTRIBS","MAX_FRAGMENT_UNIFORM_VECTORS","MAX_VERTEX_UNIFORM_VECTORS", "MAX_VARYING_VECTORS", "MAX_RENDERBUFFER_SIZE", "MAX_TEXTURE_SIZE", "MAX_CUBE_MAP_TEXTURE_SIZE", "MAX_TEXTURE_IMAGE_UNITS", "MAX_VERTEX_TEXTURE_IMAGE_UNITS", "MAX_COMBINED_TEXTURE_IMAGE_UNITS");
+		this.log("---End WebGL Evnironment Information---");
 	};
 
 	MjtWebGlToolkit.prototype.log = function log(message)
@@ -136,7 +152,7 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 		return perspectiveMatrix;
 	};
 
-	MjtWebGlToolkit.prototype.drawPicture = function drawPicture()
+	MjtWebGlToolkit.prototype.drawPicture = function drawPicture(elapsedTime)
 	{
 		// Clear the canvas
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -162,7 +178,7 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 		for ( var i in this.geometricObjects)
 		{
 			var geometricObject = this.geometricObjects[i];
-			geometricObject.paint(this.gl);
+			geometricObject.paint(this.gl, elapsedTime);
 		}
 
 		this.gl.flush();
@@ -194,18 +210,18 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 			var elapsedTime = currentTime - tk.lastTime;
 			MjtWebGlCamera.getInstance().move(elapsedTime);
 			MjtActor.getInstance().act(elapsedTime);
-			tk.drawPicture();
+			tk.drawPicture(elapsedTime);
 			tk.lastTime = currentTime;
-			//setTimeout(f, 1000 / 30);
-			 window.requestAnimFrame(f, c);
+			// setTimeout(f, 1000 / 10);
+			window.requestAnimFrame(f, c);
 		})();
 
 	};
-	
+
 	MjtWebGlToolkit.prototype.getTexture = function getTexture(url)
 	{
 		var texture = this._textureCache[url];
-		if(url && !texture)
+		if (url && !texture)
 		{
 			this.loadImageTexture(url);
 		}
@@ -216,10 +232,12 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 	{
 		var ctx = this.gl;
 		var texture = ctx.createTexture();
-		this._textureCache[url]=texture;
+		this._textureCache[url] = texture;
 		ctx.bindTexture(ctx.TEXTURE_2D, texture);
-		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.LINEAR);
-		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
+		// ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.LINEAR);
+		// ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
+		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.LINEAR_MIPMAP_LINEAR);
+		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR_MIPMAP_LINEAR);
 		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_S, ctx.CLAMP_TO_EDGE);
 		ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_T, ctx.CLAMP_TO_EDGE);
 
@@ -228,7 +246,7 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 		{
 			MjtWebGlToolkit.getInstance().doLoadImageTexture(ctx, texture.image, texture);
 		};
-		texture.image.src = url  + "?" + new Date().getTime();
+		texture.image.src = url + "?" + new Date().getTime();
 		return texture;
 	};
 
@@ -237,6 +255,7 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 		console.log("Image loaded.  Binding...." + image.src);
 		ctx.bindTexture(ctx.TEXTURE_2D, texture);
 		ctx.texImage2D(ctx.TEXTURE_2D, 0, ctx.RGBA, ctx.RGBA, ctx.UNSIGNED_BYTE, image);
+		ctx.generateMipmap(ctx.TEXTURE_2D);
 		console.log("Bound.");
 	};
 

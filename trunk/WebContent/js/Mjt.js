@@ -60,6 +60,7 @@ Mjt.prototype.getFileNameOfTypeName = function getFileNameOfTypeName(typeName)
 
 Mjt.prototype.loadOnce = function loadOnce(typeName)
 {
+	console.log("loading Once: " + typeName)
 	var fileNameOfType = this.getFileNameOfTypeName(typeName);
 	if (!this.loaded[fileNameOfType])
 	{

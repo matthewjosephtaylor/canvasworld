@@ -160,7 +160,8 @@ mjt.require("MjtWebGlBlock", "MjtStorageLocal", function defineMjtWebGlSceneCall
 						document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
 					};
 				};
-				setTimeout(f(x,y,z), (i+j) *100);
+				f(x,y,z)();
+				//setTimeout(f(x,y,z), (i+j) *100);
 			}
 		}
 	}

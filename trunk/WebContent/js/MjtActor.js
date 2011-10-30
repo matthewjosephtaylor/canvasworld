@@ -17,10 +17,20 @@ mjt.require("MjtUserInput",  function defineMjtActorCallback()
 	{
 		this.addBlock1();
 		this.addBlock2();
+		this.addObject();
 		this.load();
 		this.clear();
 		this.save();
 		this.createTerrain();
+	};
+	MjtActor.prototype.addObject = function addObject()
+	{
+		var keyPressTime = MjtUserInput.getInstance().grabKeyPress(55);
+		if(keyPressTime)
+		{
+			var object 
+			//TODO MJT do something here :)
+		}
 	};
 	
 	MjtActor.prototype.addBlock1 = function addBlock()

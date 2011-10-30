@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Canvas World 0.1 (alpha)</title>
+<title>Canvas World</title>
 
 
 <script id="vshader" type="x-shader/x-vertex">
@@ -100,7 +100,13 @@ canvas { /* border: 2px solid black; */
 	<canvas id="mjtCanvas">
     If you're seeing this your web browser doesn't support the &lt;canvas>&gt; element. Ouch!
 </canvas>
-	<div class="text">Canvas World 0.2 (alpha)</div>
+<div style="float:left; position:absolute; top:0;">
+W A S D R V keys to move<br>
+Arrows keys to look<br>
+F and Space keys to place blocks<br>
+</div>
+<div class="text">Canvas World 0.2 (alpha)</div>
+
 	<div id="framerate"></div>
 	<div id="cubeCount"></div>
 	<button onclick="MjtWebGlScene.getInstance().createTerrain();">Boom!</button>

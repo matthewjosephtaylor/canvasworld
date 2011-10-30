@@ -10,15 +10,15 @@ mjt.register("window.requestAnimFrame", "webgl-utils.js");
 //mjt.require("MjtStorageWebSql","MjtConditional", function()
 {
 
-	console.log("start main...");
-	
-	console.log("got result: 1");
-	var worker = new Worker('worker.js');
-	console.log("got result: 2");
-	
-	var result = worker.postMessage("start");
-	
-	console.log("got result: " + result );
+//	console.log("start main...");
+//	
+//	console.log("got result: 1");
+//	var worker = new Worker('worker.js');
+//	console.log("got result: 2");
+//	
+//	var result = worker.postMessage("start");
+//	
+//	console.log("got result: " + result );
 	
 //	mjtWebGlToolkit = new MjtWebGlToolkit();
 //	mjtWebGlToolkit.start('mainCanvas');
