@@ -50,7 +50,8 @@ mjt.require("MjtUserInput",  function defineMjtActorCallback()
 
 //			console.log("block pos: " + JSON.stringify(block.positionArray));
 			MjtWebGlToolkit.getInstance().geometricObjects.push(block);
-			document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
+			MjtStats.getInstance().update("cubeCount", MjtWebGlToolkit.getInstance().geometricObjects.length);
+			//document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
 		}	
 	};
 
@@ -71,7 +72,8 @@ mjt.require("MjtUserInput",  function defineMjtActorCallback()
 
 //			console.log("block pos: " + JSON.stringify(block.positionArray));
 			MjtWebGlToolkit.getInstance().geometricObjects.push(block);
-			document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
+			MjtStats.getInstance().update("cubeCount", MjtWebGlToolkit.getInstance().geometricObjects.length);
+			//document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
 		}	
 	};
 

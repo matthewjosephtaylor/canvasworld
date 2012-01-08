@@ -138,6 +138,19 @@ Mjt.prototype.require = function require()
 	}
 };
 
+/**
+ * Modify the given function such that it adheres to the singleton pattern
+ * 
+ * Example:  mjt.singletonify(Foo);
+ * 
+ * var foo = Foo.getInstance();
+ * var bar = Foo.getInstance();
+ * 
+ * foo and bar are the same instance object of Foo.
+ * 
+ * 
+ * @param constructorFunc
+ */
 Mjt.prototype.singletonify = function singletonify(constructorFunc)
 {
 	var instance = null;
@@ -156,6 +169,15 @@ Mjt.prototype.singletonify = function singletonify(constructorFunc)
 
 	};
 };
+
+/**
+ * Insure the given function is evaluated after the current thread loop pass
+ */
+Mjt.prototype.later = function later(func) {
+	window.setTimeout(0,func);
+};
+
+
 
 mjt = new Mjt("js", "css", false);
 

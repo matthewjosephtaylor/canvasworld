@@ -1,4 +1,4 @@
-mjt.require("MjtWebGlBlock", "MjtStorageLocal", function defineMjtWebGlSceneCallback()
+mjt.require("MjtWebGlBlock", "MjtStorageLocal", "MjtStats", function defineMjtWebGlSceneCallback()
 {
 
 	MjtWebGlScene = function MjtWebGlScene()
@@ -55,7 +55,8 @@ mjt.require("MjtWebGlBlock", "MjtStorageLocal", function defineMjtWebGlSceneCall
 		store.get([ MjtWebGlBlock.prototype.constructor.name, [] ], function(result)
 		{
 			MjtWebGlToolkit.getInstance().geometricObjects.push(result);
-			document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
+			MjtStats.getInstance().update("cubeCount", MjtWebGlToolkit.getInstance().geometricObjects.length);
+			//document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
 			// console.log("Got result: ");
 			// console.log(JSON.stringify(result));
 			// console.log(result);
@@ -106,7 +107,8 @@ mjt.require("MjtWebGlBlock", "MjtStorageLocal", function defineMjtWebGlSceneCall
 						{
 							var block = new MjtWebGlBlock([ i * 2.5, j * 2.5, Math.random() * x * 5 ]);
 							MjtWebGlToolkit.getInstance().geometricObjects.push(block);
-							document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
+							MjtStats.getInstance().update("cubeCount", MjtWebGlToolkit.getInstance().geometricObjects.length);
+							//document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
 						}
 						// catch (e)
 						// {
