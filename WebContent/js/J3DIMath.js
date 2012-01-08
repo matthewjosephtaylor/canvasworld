@@ -437,7 +437,7 @@ J3DIMatrix4.prototype.rotate = function(angle,x,y,z)
     }
 
     // angles are in degrees. Switch to radians
-    angle = angle / 180 * Math.PI;
+    //angle = angle / 180 * Math.PI;
 
     angle /= 2;
     var sinA = Math.sin(angle);

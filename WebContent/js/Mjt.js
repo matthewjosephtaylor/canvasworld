@@ -174,7 +174,16 @@ Mjt.prototype.singletonify = function singletonify(constructorFunc)
  * Insure the given function is evaluated after the current thread loop pass
  */
 Mjt.prototype.later = function later(func) {
-	window.setTimeout(0,func);
+	var f = function laterWrapper(){
+		try{
+			func();
+		}
+		catch(e){
+			console.log("Error calling later function: " + e)
+			console.log(e)
+		}
+	}
+	window.setTimeout(f,0);
 };
 
 

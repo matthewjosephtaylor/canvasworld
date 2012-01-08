@@ -563,7 +563,8 @@ Framerate.prototype.updateFramerate = function()
 
     var framerate = tot / this.framerates.length;
     framerate = Math.round(framerate);
-    document.getElementById(this.id).innerHTML = "Framerate:"+framerate+"fps";
+//    document.getElementById(this.id).innerHTML = "Framerate:"+framerate+"fps";
+	MjtStats.getInstance().update("framerate", framerate+"fps");
 }
 
 Framerate.prototype.snapshot = function()

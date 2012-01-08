@@ -15,6 +15,7 @@ MjtStats.prototype.update = function update(name, value) {
 	this.measures[name] = value;
 	var self = this;
 	mjt.later(function() {self.updateDisplay(name);});
+	//this.updateDisplay(name);
 	return value;
 };
 
@@ -36,6 +37,7 @@ MjtStats.prototype.get = function get(name) {
 MjtStats.prototype.updateDisplay = function updateDisplay(name) {
 	var element = document.getElementById(name + "_display");
 	if(element != null) {
+		//console.log("displaying: " + name)
 		element.innerHTML = name + ": " + this.get(name);
 	}
 };

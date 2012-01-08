@@ -159,7 +159,8 @@ mjt.require("MjtWebGlBlock", "MjtStorageLocal", "MjtStats", function defineMjtWe
 						{
 							block.setSolidColor([0.5/(y+1),1/(y+1),0.2/(y+1),1]);
 						}	
-						document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
+						//document.getElementById("cubeCount").innerHTML = "Cube Count: " + MjtWebGlToolkit.getInstance().geometricObjects.length;
+						MjtStats.getInstance().update("cubeCount", MjtWebGlToolkit.getInstance().geometricObjects.length);
 					};
 				};
 				f(x,y,z)();

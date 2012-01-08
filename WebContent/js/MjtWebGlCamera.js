@@ -1,5 +1,5 @@
 
-mjt.require("MjtUserInput", function defineMjtWebGlCamera()
+mjt.require("MjtUserInput", "MjtStats", function defineMjtWebGlCamera()
 {
 	MjtWebGlCamera = function MjtWebGlCamera()
 	{
@@ -25,6 +25,9 @@ mjt.require("MjtUserInput", function defineMjtWebGlCamera()
 			this.lookRight();
 			this.lookUp();
 			this.lookDown();
+			
+			MjtStats.getInstance().update("camera", this.toString()); 
+			
 		};
 
 		this.degToRad = function degToRad(degrees)
@@ -43,8 +46,8 @@ mjt.require("MjtUserInput", function defineMjtWebGlCamera()
 			// var cameraStepAmount = .05;
 			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond;
 			// console.log("cameraStepAmount: " + cameraStepAmount);
-			this.posx -= Math.sin(this.degToRad(this.yaw)) * cameraStepAmount;
-			this.posz -= Math.cos(this.degToRad(this.yaw)) * cameraStepAmount;
+			this.posx -= Math.sin(this.yaw) * cameraStepAmount;
+			this.posz -= Math.cos(this.yaw) * cameraStepAmount;
 			// console.log("this.posz: " + this.posz);
 
 			// mjtWebGlToolkit.drawPicture();
@@ -53,8 +56,8 @@ mjt.require("MjtUserInput", function defineMjtWebGlCamera()
 		{
 			var keyPressTime = this.mjtUserInput.grabKeyPress(83);
 			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond;
-			this.posx += Math.sin(this.degToRad(this.yaw)) * cameraStepAmount;
-			this.posz += Math.cos(this.degToRad(this.yaw)) * cameraStepAmount;
+			this.posx += Math.sin(this.yaw) * cameraStepAmount;
+			this.posz += Math.cos(this.yaw) * cameraStepAmount;
 			// console.log("moving backward cameraStepAmount: " + cameraStepAmount);
 			// mjtWebGlToolkit.drawPicture();
 		};
@@ -62,16 +65,16 @@ mjt.require("MjtUserInput", function defineMjtWebGlCamera()
 		{
 			var keyPressTime = this.mjtUserInput.grabKeyPress(65);
 			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond;
-			this.posx -= Math.cos(this.degToRad(-this.yaw)) * cameraStepAmount;
-			this.posz -= Math.sin(this.degToRad(-this.yaw)) * cameraStepAmount;
+			this.posx -= Math.cos(-this.yaw) * cameraStepAmount;
+			this.posz -= Math.sin(-this.yaw) * cameraStepAmount;
 			// mjtWebGlToolkit.drawPicture();
 		};
 		this.moveRight = function moveRight()
 		{
 			var keyPressTime = this.mjtUserInput.grabKeyPress(68);
 			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond;
-			this.posx += Math.cos(this.degToRad(-this.yaw)) * cameraStepAmount;
-			this.posz += Math.sin(this.degToRad(-this.yaw)) * cameraStepAmount;
+			this.posx += Math.cos(-this.yaw) * cameraStepAmount;
+			this.posz += Math.sin(-this.yaw) * cameraStepAmount;
 			// mjtWebGlToolkit.drawPicture();
 		};
 
@@ -92,7 +95,7 @@ mjt.require("MjtUserInput", function defineMjtWebGlCamera()
 		this.lookUp = function lookUp()
 		{
 			var keyPressTime = this.mjtUserInput.grabKeyPress(38);
-			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 10;
+			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 0.1;
 			this.pitch += cameraStepAmount;
 			// mjtWebGlToolkit.drawPicture();
 		};
@@ -100,7 +103,7 @@ mjt.require("MjtUserInput", function defineMjtWebGlCamera()
 		this.lookDown = function lookDown()
 		{
 			var keyPressTime = this.mjtUserInput.grabKeyPress(40);
-			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 10;
+			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 0.1;
 			this.pitch -= cameraStepAmount;
 			// mjtWebGlToolkit.drawPicture();
 		};
@@ -108,7 +111,7 @@ mjt.require("MjtUserInput", function defineMjtWebGlCamera()
 		this.lookLeft = function lookLeft()
 		{
 			var keyPressTime = this.mjtUserInput.grabKeyPress(37);
-			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 10;
+			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 0.1;
 			this.yaw += cameraStepAmount;
 			// mjtWebGlToolkit.drawPicture();
 		};
@@ -116,7 +119,7 @@ mjt.require("MjtUserInput", function defineMjtWebGlCamera()
 		this.lookRight = function lookRight()
 		{
 			var keyPressTime = this.mjtUserInput.grabKeyPress(39);
-			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 10;
+			var cameraStepAmount = keyPressTime * this.velocityCoordPerSecond * 0.1;
 			this.yaw -= cameraStepAmount;
 			// mjtWebGlToolkit.drawPicture();
 		};

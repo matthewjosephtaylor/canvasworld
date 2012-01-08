@@ -119,6 +119,12 @@ mjt.require("MjtActor", "initWebGL", "J3DIVector3", "J3DIMatrix4", "window.reque
 		{
 			throw "Unable to initialize WebGL";
 		}
+	
+		//enable alpha blending
+//		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE);
+		//this.gl.blendFunc( this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA  );
+//		this.gl.enable(this.gl.BLEND);
+//		this.gl.disable(this.gl.DEPTH_TEST);
 
 		// Set up light direction uniform
 		this.gl.uniform3f(this.gl.getUniformLocation(this.gl.program, "lightDir"), 0, 0, 1);
