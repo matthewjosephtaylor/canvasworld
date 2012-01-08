@@ -1,13 +1,14 @@
-An exploration of using HTML5 canvas 3d graphics.
+Think of this as a sort of 3D first-person paint program.
 
-Currently this doesn't do much more than proof-of-concept, so set expectations accordingly. :)
+This is mostly a playground for me to learn WebGl, so set expectations accordingly. :)
 
-Works on Chrome/Firefox  (best on chrome at this moment).
 
-Download the zip file:
+Should work on Chrome/Firefox (Chrome is what I develop against).
 
-https://github.com/matthewjosephtaylor/canvasworld/zipball/master
+Life is too short to even attempt to support IE.
 
-unzip and point your browser to WebContent/main.html
+To test out point your browser to:
 
-Enjoy, have fun, hack and play.
+http://matthewjosephtaylor.github.com/canvasworld/WebContent/main.html
+
+Enjoy, have fun, and play. :)
