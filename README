@@ -1,0 +1,13 @@
+An exploration of using HTML5 canvas 3d graphics.
+
+Currently this doesn't do much more than proof-of-concept, so set expectations accordingly. :)
+
+Works on Chrome/Firefox  (best on chrome at this moment).
+
+Download the zip file:
+
+https://github.com/matthewjosephtaylor/canvasworld/zipball/master
+
+unzip and point your browser to WebContent/main.html
+
+Enjoy, have fun, hack and play.
